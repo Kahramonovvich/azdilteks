@@ -5,6 +5,7 @@ import NextTopLoader from "nextjs-toploader";
 import { GlobalProvider } from "@/contexts/contexts";
 import { ToastContainer, Zoom } from "react-toastify";
 import Footer from "@/components/Footer";
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
           {children}
           <Footer />
         </GlobalProvider>
+        <Analytics />
       </body>
     </html>
   );
