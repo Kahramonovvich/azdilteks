@@ -1,13 +1,12 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import NavBar from "@/components/NavBar";
+import NextTopLoader from "nextjs-toploader";
+import { GlobalProvider } from "@/contexts/contexts";
+import { ToastContainer, Zoom } from "react-toastify";
+import Footer from "@/components/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
   subsets: ["latin"],
 });
 
@@ -18,9 +17,31 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+    <html lang="uz">
+      <body className={`${inter.className}`}>
+        <GlobalProvider>
+          <NextTopLoader
+            color="#F43D01"
+            height={3}
+            showSpinner={false}
+          />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable={false}
+            pauseOnHover
+            theme='colored'
+            transition={Zoom}
+          />
+          <NavBar />
+          {children}
+          <Footer />
+        </GlobalProvider>
       </body>
     </html>
   );
