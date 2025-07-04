@@ -1,13 +1,17 @@
 import Link from "next/link";
 import LinkArrowIcon from '@/icons/Arrow next page.svg'
 import CatalogComponent from "@/components/CatalogComponent";
-import { products } from "../../../products";
 import { clothesCategory } from "@/constants/constants";
 import CallMe from "@/components/CallMe";
+import { products } from "../../../../../products";
 
-export default async function CatalogPage({ searchParams }) {
+export default async function GenderPage({ params, searchParams }) {
 
+
+    const { gender, locale } = await params;
     const { type, priceFrom, priceTo, page } = await searchParams;
+
+    const isUz = locale === 'uz';
 
     let filteredProducts = products;
     let typedProducts = products;
@@ -15,6 +19,15 @@ export default async function CatalogPage({ searchParams }) {
     const activeCat = clothesCategory.find((cat) => {
         return cat.slug === type;
     });
+
+    if (gender) {
+        filteredProducts = filteredProducts.filter((product) => {
+            return product.sex === gender;
+        });
+        typedProducts = typedProducts.filter((product) => {
+            return product.sex === gender;
+        });
+    };
 
     if (type) {
         filteredProducts = filteredProducts.filter((product) => {
@@ -33,25 +46,33 @@ export default async function CatalogPage({ searchParams }) {
     };
 
     return (
-        <div className="catalogPage">
+        <div className="genderPage">
             <div className="container">
                 <div className="top mt-10 flex items-center gap-x-2">
                     <Link
-                        href={'/'}
+                        href={`/${locale}`}
                         className="font-medium text-[#A3A3A3]"
                     >
-                        Bosh sahifa
+                        {locale === 'uz' ? 'Bosh sahifa' : 'Главная страница'}
                     </Link>
                     <LinkArrowIcon />
                     <Link
-                        href={'/catalog'}
+                        href={`/${locale}/catalog`}
                         className="font-medium text-[#A3A3A3]"
                     >
-                        Katalog
+                        {locale === 'uz' ? 'Katalog' : 'Каталог'}
                     </Link>
                     <LinkArrowIcon />
-                    <p className="font-medium ">
-                        {activeCat?.name || 'Barcha mahsulotlar'}
+                    <Link
+                        href={`/catalog/${gender}`}
+                        className="font-medium text-[#A3A3A3]"
+                    >
+                        {gender === 'men' ? locale === 'uz' ? 'Erkaklar uchun' : 'Для мужчин' :
+                            gender === 'woman' ? locale === 'uz' ? 'Ayollar uchun' : 'Для женщин' : ''}
+                    </Link>
+                    <LinkArrowIcon />
+                    <p className="font-medium">
+                        {locale === 'uz' ? `${activeCat?.name || 'Barcha mahsulotlar'}` : `${activeCat?.nameRu || 'Все продукты'}`}
                     </p>
                 </div>
                 <div className="content">
@@ -63,10 +84,12 @@ export default async function CatalogPage({ searchParams }) {
                         filteredProducts={filteredProducts}
                         typedProducts={typedProducts}
                         page={page}
+                        gender={gender}
+                        locale={locale}
                     />
                 </div>
             </div>
             <CallMe />
         </div>
-    );
-};
+    )
+}

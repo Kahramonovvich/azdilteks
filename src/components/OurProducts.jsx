@@ -6,48 +6,44 @@ import Image from 'next/image';
 import { formatPrice } from '@/utils/utils';
 import { industry } from '@/constants/constants';
 import { useGlobalContext } from '@/contexts/contexts';
-import { toast } from 'react-toastify';
+import Link from 'next/link';
 
-export default function OurProducts({ selectedIndustry, selectedSex, selectedProducts }) {
-
+export default function OurProducts({ selectedIndustry, selectedSex, selectedProducts, locale }) {
     const router = useRouter();
-    const { addToCart } = useGlobalContext();
+    const { setOpenDetails, setSelectedId } = useGlobalContext();
 
     const [dropDown, setDropDown] = useState(false);
     const [sex, setSex] = useState(selectedSex || 'men');
     const [activeIndustry, setActiveIndustry] = useState(selectedIndustry || 'all');
 
-    const handleAdd = (id, size, color) => {
-        const added = addToCart(id, { size, color });
-        if (added) {
-            toast.success("Mahsulot savatchaga qo`shildi!");
-        } else {
-            toast.warning("Bu mahsulot savatchada mavjud!");
-        };
-    };
-
     useEffect(() => {
         setActiveIndustry(selectedIndustry || 'all');
-        setSex(selectedSex || 'men')
+        setSex(selectedSex || 'men');
     }, [selectedIndustry, selectedSex]);
+
+    const texts = {
+        title: locale === 'ru' ? 'Наши продукты' : 'Bizning maxsulotlar',
+        men: locale === 'ru' ? 'Для мужчин' : 'Erkaklar uchun',
+        women: locale === 'ru' ? 'Для женщин' : 'Ayollar uchun',
+        all: locale === 'ru' ? 'Все' : 'Barchasi',
+        addToCart: locale === 'ru' ? 'Добавить в корзину +' : 'Savatga qo’shish +',
+    };    
 
     return (
         <div className="ourProducts mt-[60px]">
             <div className="container">
                 <div className="top">
                     <h3 className="text-5xl leading-[56px]">
-                        Bizning maxsulotlar
+                        {texts.title}
                     </h3>
                     <div className="flex items-center gap-x-5 mt-12">
-                        <div
-                            className="dropDown cursor-pointer rounded-3xl border px-5 py-3 relative"
-                        >
+                        <div className="dropDown cursor-pointer rounded-3xl border px-5 py-3 relative">
                             <div
                                 className="box flex items-center gap-x-2"
                                 onClick={() => setDropDown(!dropDown)}
                             >
                                 <p className='font-medium'>
-                                    {sex === 'men' ? 'Erkaklar uchun' : 'Ayollar uchun'}
+                                    {sex === 'men' ? texts.men : texts.women}
                                 </p>
                                 <DropDownIcon
                                     className={`transition-all duration-300 ${dropDown ? 'rotate-180' : ''}`}
@@ -62,42 +58,42 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                                     onClick={() => {
                                         setSex('men');
                                         setDropDown(false);
-                                        router.push(`/?gender=men${selectedIndustry ? `&industry=${selectedIndustry}` : ''}`);;
+                                        router.push(`/${locale}/?gender=men${activeIndustry !== 'all' ? `&industry=${activeIndustry}` : ''}`);
                                     }}
                                 >
-                                    Erkaklar uchun
+                                    {texts.men}
                                 </button>
                                 <button
                                     className='hover:bg-slate-200 text-left px-5 py-3 w-full font-medium'
                                     onClick={() => {
                                         setSex('woman');
                                         setDropDown(false);
-                                        router.push(`/?gender=woman${selectedIndustry ? `&industry=${selectedIndustry}` : ''}`);
+                                        router.push(`/${locale}/?gender=woman${activeIndustry !== 'all' ? `&industry=${activeIndustry}` : ''}`);
                                     }}
                                 >
-                                    Ayollar uchun
+                                    {texts.women}
                                 </button>
                             </div>
                         </div>
                         <button
                             onClick={() => {
-                                router.push(`/?${selectedSex ? `gender=${selectedSex}` : ''}`);
+                                router.push(`/${locale}/?${sex ? `gender=${sex}` : ''}`);
                                 setActiveIndustry('all');
                             }}
                             className={`font-medium px-5 py-3 rounded-3xl ${activeIndustry === 'all' ? 'bg-black text-white' : ''}`}
                         >
-                            Barchasi
+                            {texts.all}
                         </button>
-                        {industry.map((item) => (
+                        {industry.map((item, index) => (
                             <button
-                                key={item.name}
+                                key={index}
                                 onClick={() => {
-                                    router.push(`/?${selectedSex ? `gender=${selectedSex}&` : ''}industry=${item.slug}`);
+                                    router.push(`/${locale}/?${sex ? `gender=${sex}&` : ''}industry=${item.slug}`);
                                     setActiveIndustry(item.slug);
                                 }}
                                 className={`font-medium px-5 py-3 rounded-3xl ${activeIndustry === item.slug ? 'bg-black text-white' : ''}`}
                             >
-                                {item.name}
+                                {locale === 'ru' ? item.nameRu : item.name}
                             </button>
                         ))}
                     </div>
@@ -114,17 +110,23 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                                 />
                             </div>
                             <div className="bottom mt-[15px]">
-                                <p className='name font-medium text-2xl mb-1 text-nowrap truncate'>
+                                <Link
+                                    href={`${locale}/catalog/product/${item.id}`}
+                                    className='name font-medium text-2xl mb-1 text-nowrap truncate block'
+                                >
                                     {item.name}
-                                </p>
+                                </Link>
                                 <p className='text-primary-orange text-lg leading-[26px] font-semibold'>
                                     {formatPrice(item.price)}
                                 </p>
                                 <button
                                     className='text-white bg-primary-orange rounded-[32px] px-6 py-3 mt-[27px] font-medium'
-                                    onClick={() => handleAdd(item.id, 'l', 'red')}
+                                    onClick={() => {
+                                        setOpenDetails(true);
+                                        setSelectedId(item.id);
+                                    }}
                                 >
-                                    Savatga qo’shish +
+                                    {texts.addToCart}
                                 </button>
                             </div>
                         </div>

@@ -10,7 +10,8 @@ import AddIcon from '@/icons/add.svg'
 import DeleteIcon from '@/icons/trash.svg'
 import { toast } from 'react-toastify';
 
-export default function BasketComponent({ products }) {
+export default function BasketComponent({ products, locale }) {
+    const isUz = locale === 'uz';
 
     const {
         cart,
@@ -20,44 +21,34 @@ export default function BasketComponent({ products }) {
         handleCheckAll,
         setOrderModal,
     } = useGlobalContext();
-    
+
     const [mounted, setMounted] = useState(false);
 
     const selectedColor = (color) => {
         const colItem = colors.find(item => item.slug === color);
-        if (!colItem) return null;
-        return colItem.hex;
+        return colItem?.hex || null;
     };
 
     useEffect(() => setMounted(true), []);
-
     if (!mounted) return null;
 
     const productsOnBasket = cart.map(cartItem => {
         const product = products.find(p => Number(p.id) === Number(cartItem.id));
-        if (!product) return null;
-
-        return {
-            ...product,
-            ...cartItem,
-        };
+        return product ? { ...product, ...cartItem } : null;
     }).filter(Boolean);
 
-    const calculateTotalPrice = (items) => {
-        return items.reduce((sum, item) => {
-            return item.isChecked ? sum + (item.price * item.quantity) : sum;
-        }, 0);
-    };
+    const calculateTotalPrice = (items) =>
+        items.reduce((sum, item) => item.isChecked ? sum + (item.price * item.quantity) : sum, 0);
 
     const allChaked = productsOnBasket.every(item => item.isChecked);
 
     const handleSendOrder = () => {
         const isOneChecked = productsOnBasket.some(item => item.isChecked);
         if (!isOneChecked) {
-            toast.error("Savatch bo`sh yoki mahsulot tanlanmagan!");
+            toast.error(isUz ? "Savatcha bo‘sh yoki mahsulot tanlanmagan!" : "Корзина пуста или не выбраны товары!");
         } else {
             setOrderModal(true);
-        };
+        }
     };
 
     return (
@@ -69,22 +60,22 @@ export default function BasketComponent({ products }) {
                             <div className="left flex items-center gap-x-4">
                                 <button
                                     className={`box rounded-full w-6 h-6 flex items-center justify-center ${allChaked ? 'bg-primary-orange' : 'border'}`}
-                                    onClick={() => handleCheckAll()}
+                                    onClick={handleCheckAll}
                                 >
-                                    {allChaked && (
-                                        <CheckIcon />
-                                    )}
+                                    {allChaked && <CheckIcon />}
                                 </button>
-                                <p className="font-medium text-[#A3A3A3]">Maxsulotlar</p>
+                                <p className="font-medium text-[#A3A3A3]">
+                                    {isUz ? 'Maxsulotlar' : 'Товары'}
+                                </p>
                             </div>
                             <div className="right flex items-center justify-between">
-                                <p className="font-medium text-[#A3A3A3]">Soni</p>
-                                <p className="font-medium text-[#A3A3A3]">Narxi</p>
+                                <p className="font-medium text-[#A3A3A3]">{isUz ? 'Soni' : 'Количество'}</p>
+                                <p className="font-medium text-[#A3A3A3]">{isUz ? 'Narxi' : 'Цена'}</p>
                             </div>
                         </div>
                     </div>
                     <div className="bottom">
-                        {productsOnBasket?.map((item, index) => (
+                        {productsOnBasket.map((item, index) => (
                             <div key={index} className="box border-b py-7">
                                 <div className="grid grid-cols-2 items-center gap-x-6">
                                     <div className="left flex items-center gap-x-4">
@@ -92,9 +83,7 @@ export default function BasketComponent({ products }) {
                                             className={`box rounded-full w-6 h-6 flex items-center justify-center ${item.isChecked ? 'bg-primary-orange' : 'border'}`}
                                             onClick={() => toggleCheck(item.id, item.selectedOptions, !item.isChecked)}
                                         >
-                                            {item.isChecked && (
-                                                <CheckIcon />
-                                            )}
+                                            {item.isChecked && <CheckIcon />}
                                         </button>
                                         <div className="img relative aspect-[0.89] max-w-32 w-full overflow-hidden rounded-2xl">
                                             <Image
@@ -104,20 +93,20 @@ export default function BasketComponent({ products }) {
                                                 alt={item.name}
                                             />
                                         </div>
-                                        <div className="box">
-                                            <p className='font-semibold text-lg leading-[26px] mb-2 truncate'>
+                                        <div className="box flex-1 max-w-[228px]">
+                                            <p className='font-semibold text-lg leading-[26px] mb-2 truncate block'>
                                                 {item.name}
                                             </p>
                                             <p className='text-lg leading-[26px] text-[#A3A3A3] mb-2'>
-                                                O’lcham: <span className='font-medium text-[#171717] uppercase'>{item.selectedOptions.size}</span>
+                                                {isUz ? 'O‘lcham:' : 'Размер:'}
+                                                <span className='font-medium text-[#171717] uppercase'> {item.selectedOptions.size}</span>
                                             </p>
                                             <div className="box flex items-center gap-x-2">
                                                 <p className='text-lg leading-[26px] text-[#A3A3A3]'>
-                                                    Rang:
+                                                    {isUz ? 'Rang:' : 'Цвет:'}
                                                 </p>
                                                 <div
-                                                    className={`color w-5 h-5 rounded-full
-                                                        ${item.selectedOptions.color === 'white' ? 'border' : ''}`}
+                                                    className={`color w-5 h-5 rounded-full ${item.selectedOptions.color === 'white' ? 'border' : ''}`}
                                                     style={{ background: selectedColor(item.selectedOptions.color) }}
                                                 ></div>
                                             </div>
@@ -127,10 +116,10 @@ export default function BasketComponent({ products }) {
                                         <div className="flex items-center gap-x-6">
                                             <div className="quantity flex items-center gap-x-1">
                                                 <button
-                                                    onClick={
-                                                        () => item.quantity === 1 ?
-                                                            removeFromCart(item.id, item.selectedOptions) :
-                                                            updateQuantity(item.id, item.selectedOptions, item.quantity - 1)
+                                                    onClick={() =>
+                                                        item.quantity === 1
+                                                            ? removeFromCart(item.id, item.selectedOptions)
+                                                            : updateQuantity(item.id, item.selectedOptions, item.quantity - 1)
                                                     }
                                                     className='p-1'
                                                 >
@@ -152,7 +141,7 @@ export default function BasketComponent({ products }) {
                                             >
                                                 <DeleteIcon />
                                                 <p className='font-medium text-sm leading-[22px]'>
-                                                    O’chirish
+                                                    {isUz ? 'O‘chirish' : 'Удалить'}
                                                 </p>
                                             </button>
                                         </div>
@@ -165,24 +154,29 @@ export default function BasketComponent({ products }) {
                         ))}
                     </div>
                 </div>
+
                 <div className="right p-6 border h-max max-w-[380px] rounded-2xl">
                     <p className='text-xl font-bold mb-2'>
-                        Buyurtma xulosasi
+                        {isUz ? 'Buyurtma xulosasi' : 'Сводка заказа'}
                     </p>
-                    <p
-                        className='text-[#171717]'
-                    >
-                        Umumiy xarajat vaqtinchalik xarajatlardan iborat bo'lib, yuk tashish xarajatlarini hisobga olmaganda
+                    <p className='text-[#171717]'>
+                        {isUz
+                            ? "Umumiy xarajat vaqtinchalik xarajatlardan iborat bo'lib, yuk tashish xarajatlarini hisobga olmaganda"
+                            : "Общая стоимость является предварительной и не включает доставку"}
                     </p>
                     <div className="price mt-6 flex flex-col gap-y-4">
                         <div className="box flex items-center justify-between">
-                            <p className='text-lg leading-[26px] text-[#525252]'>Narx:</p>
-                            <p className='text-lg leading-[26px] text-[#171717]'>{formatPrice(calculateTotalPrice(productsOnBasket))}</p>
+                            <p className='text-lg leading-[26px] text-[#525252]'>{isUz ? 'Narx:' : 'Цена:'}</p>
+                            <p className='text-lg leading-[26px] text-[#171717]'>
+                                {formatPrice(calculateTotalPrice(productsOnBasket))}
+                            </p>
                         </div>
                         <div className="border"></div>
                         <div className="totalPrice">
                             <div className="box flex items-center justify-between">
-                                <p className='text-lg leading-[26px] text-[#525252]'>Umumiy narx:</p>
+                                <p className='text-lg leading-[26px] text-[#525252]'>
+                                    {isUz ? 'Umumiy narx:' : 'Итоговая сумма:'}
+                                </p>
                                 <p className='text-lg leading-[26px] text-[#171717] font-semibold'>
                                     {formatPrice(calculateTotalPrice(productsOnBasket))}
                                 </p>
@@ -190,10 +184,10 @@ export default function BasketComponent({ products }) {
                         </div>
                     </div>
                     <button
-                        onClick={() => handleSendOrder()}
+                        onClick={handleSendOrder}
                         className='bg-primary-orange rounded-3xl p-4 w-full text-white mt-12'
                     >
-                        Buyurtma berish
+                        {isUz ? 'Buyurtma berish' : 'Оформить заказ'}
                     </button>
                 </div>
             </div>

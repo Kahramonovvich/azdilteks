@@ -15,13 +15,13 @@ const partners = [
     { icon: <ChanelIcon /> },
 ];
 
-export default function Partners() {
+export default function Partners({ locale }) {
     return (
         <div className="partners mt-[90px]">
             <div className="container">
                 <div className="top">
                     <h3 className="text-5xl leading-[56px] text-center">
-                        Xamkorlarimiz
+                        {locale === 'uz' ? 'Xamkorlarimiz' : 'Наши партнеры'}
                     </h3>
                 </div>
                 <div className="bottom grid grid-cols-6 gap-x-6 mt-12">

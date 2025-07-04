@@ -1,36 +1,53 @@
+'use client'
 import ComIcon from '@/icons/comIcon.svg'
 import LeftDownWildIcon from '@/icons/left down wide.svg'
 import LeftTopWildIcon from '@/icons/left top wide.svg'
 import Image from 'next/image';
 import SunIcon from '@/icons/sun.svg'
 
-const comments = [
-    {
-        comment: "Biz Az & Dil Textile bilan 3 yildan beri ishlaymiz. Ularning matolari sifati va xizmat ko'rsatish darajasi doimo yuqori bo'lib kelmoqda.",
-        name: 'Umid Rustamov - Umid restorani'
-    },
-    {
-        comment: "Individual buyurtmalarimizni har doim o'z vaqtida va yuqori sifatda bajarishadi. Ishonchli hamkor sifatida tavsiya qilaman.",
-        name: 'Jaxongir Ahmedov - Az & Del korxonasi'
-    },
-    {
-        comment: "Az & Dil Textile bilan hamkorlik qilish juda qulay. Sifatli mahsulotlar va o'z vaqtida yetkazib berish bizning ishimizni ancha osonlashtirdi.",
-        name: 'Jaxongir Ahmedov - Elegant Maktabi'
-    },
-];
+export default function Comments({ locale }) {
+    const isUz = locale === 'uz';
 
-export default function Comments() {
+    const comments = isUz ? [
+        {
+            comment: "Biz Az & Dil Textile bilan 3 yildan beri ishlaymiz. Ularning matolari sifati va xizmat ko'rsatish darajasi doimo yuqori bo'lib kelmoqda.",
+            name: 'Umid Rustamov - Umid restorani'
+        },
+        {
+            comment: "Individual buyurtmalarimizni har doim o'z vaqtida va yuqori sifatda bajarishadi. Ishonchli hamkor sifatida tavsiya qilaman.",
+            name: 'Jaxongir Ahmedov - Az & Del korxonasi'
+        },
+        {
+            comment: "Az & Dil Textile bilan hamkorlik qilish juda qulay. Sifatli mahsulotlar va o'z vaqtida yetkazib berish bizning ishimizni ancha osonlashtirdi.",
+            name: 'Jaxongir Ahmedov - Elegant Maktabi'
+        },
+    ] : [
+        {
+            comment: "Мы работаем с Az & Dil Textile уже 3 года. Качество тканей и уровень сервиса всегда на высоте.",
+            name: 'Умид Рустамов - ресторан Umid'
+        },
+        {
+            comment: "Все индивидуальные заказы всегда выполняются вовремя и на высоком уровне. Рекомендую как надёжного партнёра.",
+            name: 'Жахонгир Ахмедов - компания Az & Del'
+        },
+        {
+            comment: "Сотрудничество с Az & Dil Textile — это удобно. Качественная продукция и своевременная доставка упростили нам работу.",
+            name: 'Жахонгир Ахмедов - школа Elegant'
+        },
+    ];
+
     return (
         <div className="comments mt-[90px]">
             <div className="container">
                 <div className="top text-center">
                     <h3 className="text-5xl leading-[56px]">
-                        Mijozlar nima deydi?
+                        {isUz ? 'Mijozlar nima deydi?' : 'Что говорят клиенты?'}
                     </h3>
                     <p className="mt-4 text-[#525252]">
-                        100+ ortiq mamnun mijozlar ular nima deydi
+                        {isUz ? '100+ ortiq mamnun mijozlar ular nima deydi' : 'Более 100 довольных клиентов делятся своими отзывами'}
                     </p>
                 </div>
+
                 <div className="bottom mt-14 grid grid-cols-3 gap-x-6">
                     {comments.map((item, index) => (
                         <div
@@ -48,6 +65,7 @@ export default function Comments() {
                     ))}
                 </div>
             </div>
+
             <div className="box mt-[90px]">
                 <div className="container">
                     <div className="bottom grid grid-cols-12 gap-6">
@@ -55,19 +73,22 @@ export default function Comments() {
                             <SunIcon />
                             <div className="text mt-[72px]">
                                 <p className='text-[60px] leading-[72px]'>
-                                    <span className='text-nowrap'>
-                                        Doimiy mijozlar
+                                    <span className=''>
+                                        {isUz ? 'Doimiy mijozlar' : 'Постоянным клиентам'}
                                     </span>
                                     <br />
                                     <span className="text-nowrap">
-                                        uchun chegirma
+                                        {isUz ? 'uchun chegirma' : 'скидка'}
                                     </span>
                                 </p>
                                 <p className='font-medium mt-3'>
-                                    80+ ortiq buyurtma bersangiz chegirma va doimiy aksiyalarda ishtirok etish imkoniyati
+                                    {isUz
+                                        ? '80+ ortiq buyurtma bersangiz chegirma va doimiy aksiyalarda ishtirok etish imkoniyati'
+                                        : 'При заказе более 80 единиц — скидка и участие в постоянных акциях'}
                                 </p>
                             </div>
                         </div>
+
                         <div className="left col-span-7 bg-[#F6F6F6] rounded-3xl pt-10 pl-8 relative flex gap-x-2">
                             <div className="absolute bottom-0 left-0">
                                 <LeftDownWildIcon />
@@ -77,7 +98,9 @@ export default function Comments() {
                             </div>
                             <div className="text max-w-[340px]">
                                 <h3 className="text-[54px] leading-[72px]">
-                                    15dan ortiq namunalar eng yaxshisi siz uchun
+                                    {isUz
+                                        ? '15dan ortiq namunalar eng yaxshisi siz uchun'
+                                        : 'Более 15 образцов — выберите лучшее для себя'}
                                 </h3>
                             </div>
                             <div className="img relative aspect-[0.59] max-w-[280px]">

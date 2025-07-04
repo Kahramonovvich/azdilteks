@@ -20,7 +20,7 @@ const getMinMaxPrices = (products) => {
     return { min, max };
 };
 
-export default function Filter({ gender, priceFrom, priceTo, type, typedProducts }) {
+export default function Filter({ gender, priceFrom, priceTo, type, typedProducts, locale }) {
 
     const router = useRouter();
     const params = new URLSearchParams();
@@ -33,7 +33,7 @@ export default function Filter({ gender, priceFrom, priceTo, type, typedProducts
         if (slug) params.set('type', slug);
         if (priceFrom) params.set('priceFrom', priceFrom);
         if (priceTo) params.set('priceTo', priceTo);
-        const href = `/catalog${gender ? `/${gender}` : ''}?${params}`;
+        const href = `/${locale}/catalog${gender ? `/${gender}` : ''}?${params}`;
         router.push(href);
     };
 
@@ -41,7 +41,7 @@ export default function Filter({ gender, priceFrom, priceTo, type, typedProducts
         if (type) params.set('type', type);
         if (short) params.set('priceFrom', short);
         if (long) params.set('priceTo', long);
-        const href = `/catalog${gender ? `/${gender}` : ''}?${params}`;
+        const href = `/${locale}/catalog${gender ? `/${gender}` : ''}?${params}`;
         router.push(href);
     };
 
@@ -69,7 +69,7 @@ export default function Filter({ gender, priceFrom, priceTo, type, typedProducts
             <div className="type">
                 <div className="top flex items-center justify-between pb-3 border-b">
                     <p className='text-lg leading-[26px]'>
-                        Mahsulot turi
+                        {locale === 'uz' ? 'Mahsulot turi' : 'Тип продуктов'}
                     </p>
                     <MinusIcon />
                 </div>
@@ -80,7 +80,7 @@ export default function Filter({ gender, priceFrom, priceTo, type, typedProducts
                                 className="flex items-center justify-between w-full"
                                 onClick={() => handleType(item.slug)}
                             >
-                                {item.name}
+                                {locale === 'uz' ? item.name : item.nameRu}
                                 <ArrowLink className='text-black' />
                             </button>
                         </li>
@@ -90,7 +90,7 @@ export default function Filter({ gender, priceFrom, priceTo, type, typedProducts
             <div className="price mt-6">
                 <div className="top flex items-center justify-between">
                     <p className='text-lg leading-[26px]'>
-                        Narx
+                        {locale === 'uz' ? 'Narx' : 'Цена'}
                     </p>
                     <MinusIcon />
                 </div>

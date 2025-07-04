@@ -10,10 +10,14 @@ import CloseIcon from '@/icons/close.svg'
 import DeleteIcon from '@/icons/small close.svg'
 import CallBackModal from './CallBackModal'
 import { useGlobalContext } from '@/contexts/contexts'
+import "flag-icons/css/flag-icons.min.css";
+import { usePathname, useSearchParams } from 'next/navigation'
 
-export default function NavBar() {
+export default function NavBar({ locale }) {
 
     const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
     const inputRef = useRef(null);
 
     const { setCallBackModal } = useGlobalContext();
@@ -21,6 +25,7 @@ export default function NavBar() {
     const [focused, setFocused] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [searched, setSearched] = useState([]);
+    const [openLanguage, setOpenLanguage] = useState(false);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -31,10 +36,21 @@ export default function NavBar() {
             return updated;
         });
         setSearchTerm('');
-        router.push(`/search/${searchTerm}`);
+        router.push(`/${locale}/search/${searchTerm}`);
+    };
+
+    const handleLanguage = (lang) => {
+        setOpenLanguage(false);
+        const segments = pathname.split('/');
+        segments[1] = lang;
+        const newPath = segments.join('/');
+        const query = searchParams.toString();
+        const fullPath = query ? `${newPath}?${query}` : newPath;
+        router.push(fullPath);
     };
 
     useEffect(() => {
+        setOpenLanguage(false);
         const stored = localStorage.getItem('searchHistory');
         if (stored) {
             setSearched(JSON.parse(stored));
@@ -65,7 +81,7 @@ export default function NavBar() {
             <div className="container">
                 <div className="flex items-center justify-between">
                     <Link
-                        href={'/'}
+                        href={`/${locale}`}
                         className="logo">
                         <Logo />
                     </Link>
@@ -76,10 +92,10 @@ export default function NavBar() {
                                 className={`relative group`}
                             >
                                 <Link
-                                    href={item.href}
+                                    href={`/${locale}${item.href}`}
                                     className='font-medium'
                                 >
-                                    {item.menu}
+                                    {locale === 'uz' ? item.menu : item.menuRu}
                                 </Link>
 
                                 {item.href === '/catalog' && (
@@ -90,22 +106,22 @@ export default function NavBar() {
                                     >
                                         <Link
                                             className="block px-5 py-3 font-medium hover:bg-slate-100"
-                                            href="/catalog/men"
+                                            href={`/${locale}/catalog/men`}
                                         >
-                                            Erkaklar uchun
+                                            {locale === 'uz' ? 'Erkaklar uchun' : 'Для мужчин'}
                                         </Link>
                                         <Link
                                             className="block px-5 py-3 font-medium hover:bg-slate-100"
-                                            href="/catalog/woman"
+                                            href={`/${locale}/catalog/woman`}
                                         >
-                                            Ayollar uchun
+                                            {locale === 'uz' ? 'Ayollar uchun' : 'Для женщин'}
                                         </Link>
                                     </div>
                                 )}
                             </div>
                         ))}
                     </div>
-                    <div className={`flex items-center gap-x-2`}>
+                    <div className={`flex items-center gap-x-2 relative`}>
                         <form
                             onSubmit={handleSearch}
                             className={`border rounded-3xl px-4 h-12 flex items-center gap-x-2 w-[205px] overflow-hidden transition-all duration-300
@@ -117,7 +133,7 @@ export default function NavBar() {
                             <input
                                 type="text"
                                 className='outline-none w-full h-full flex-1 text-sm leading-[22px] bg-white'
-                                placeholder='Qidirish...'
+                                placeholder={locale === 'uz' ? 'Qidirish...' : 'Поиск...'}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 value={searchTerm}
                                 onFocus={() => { setFocused(true); }}
@@ -126,7 +142,7 @@ export default function NavBar() {
                         </form>
                         <Link
                             className="box border rounded-full flex items-center justify-center w-12 h-12"
-                            href={'/basket'}
+                            href={`/${locale}/basket`}
                         >
                             <BagIcon />
                         </Link>
@@ -134,9 +150,33 @@ export default function NavBar() {
                             className="box px-6 h-12 bg-primary-orange rounded-[20px] text-white font-medium text-sm leading-[22px]"
                             onClick={() => setCallBackModal(true)}
                         >
-
-                            Bog’lanish
+                            {locale === 'uz' ? 'Bog’lanish' : 'Связаться'}
                         </button>
+                        <button className='font-medium p-3 border rounded-[48px] flex items-center gap-x-2'
+                            onClick={() => setOpenLanguage(!openLanguage)}
+                        >
+                            <span className={`fi fi-${locale} drop-shadow rounded-sm`}></span>
+                            {locale === 'uz' ? 'O’zbek' : 'Русский'}
+                        </button>
+                        <div
+                            className={`language absolute bg-white top-full mt-3 right-0 z-50 rounded-md border transition-all duration-300 ease-in-out
+                                overflow-hidden ${!openLanguage ? 'translate-x-full opacity-0' : 'translate-x-0'}`}
+                        >
+                            <button
+                                onClick={() => handleLanguage('uz')}
+                                className='font-medium p-3 flex items-center gap-x-2 hover:bg-primary-orange hover:text-white transition-all duration-300 ease-in-out w-full'
+                            >
+                                <span className="fi fi-uz drop-shadow rounded-sm"></span>
+                                O’zbek
+                            </button>
+                            <button
+                                onClick={() => handleLanguage('ru')}
+                                className='font-medium p-3 flex items-center gap-x-2 hover:bg-primary-orange hover:text-white transition-all duration-300 ease-in-out w-full'
+                            >
+                                <span className="fi fi-ru drop-shadow rounded-sm"></span>
+                                Русский
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

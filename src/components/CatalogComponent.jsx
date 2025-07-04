@@ -10,16 +10,25 @@ import { useRouter } from 'nextjs-toploader/app'
 import { Pagination, PaginationItem } from '@mui/material';
 import PagPrevIcon from '@/icons/pag prev.svg'
 import PagNextIcon from '@/icons/pag next.svg'
+import Link from 'next/link';
 
-export default function CatalogComponent({ gender, type, priceFrom, priceTo, filteredProducts, typedProducts, page }) {
+export default function CatalogComponent({
+    gender,
+    type,
+    priceFrom,
+    priceTo,
+    filteredProducts,
+    typedProducts,
+    page,
+    locale
+}) {
 
     const router = useRouter();
-
     const { openFilter, setOpenFilter, addToCart } = useGlobalContext();
-
+    
+    const isUz = locale === 'uz';
     const productsPerView = openFilter ? 9 : 12;
     const totalPages = Math.ceil(filteredProducts.length / productsPerView);
-
     const startIndex = ((Number(page) || 1) - 1) * productsPerView;
     const endIndex = startIndex + productsPerView;
     const currentPageProducts = filteredProducts.slice(startIndex, endIndex);
@@ -27,14 +36,14 @@ export default function CatalogComponent({ gender, type, priceFrom, priceTo, fil
     const handleAdd = (id, size, color) => {
         const added = addToCart(id, { size, color });
         if (added) {
-            toast.success("Mahsulot savatchaga qo`shildi!");
+            toast.success(isUz ? "Mahsulot savatchaga qo`shildi!" : "Товар добавлен в корзину!");
         } else {
-            toast.warning("Bu mahsulot savatchada mavjud!");
-        };
+            toast.warning(isUz ? "Bu mahsulot savatchada mavjud!" : "Этот товар уже в корзине!");
+        }
     };
 
     const handleResetFilter = () => {
-        const href = `/catalog${gender ? `/${gender}` : ''}`;
+        const href = `/${locale}/catalog${gender ? `/${gender}` : ''}`;
         router.push(href);
     };
 
@@ -44,7 +53,7 @@ export default function CatalogComponent({ gender, type, priceFrom, priceTo, fil
         if (priceFrom) params.set('priceFrom', priceFrom);
         if (priceTo) params.set('priceTo', priceTo);
         if (value) params.set('page', value);
-        const href = `/catalog${gender ? `/${gender}` : ''}?${params}`;
+        const href = `/${locale}/catalog${gender ? `/${gender}` : ''}?${params}`;
         router.push(href);
     };
 
@@ -52,14 +61,18 @@ export default function CatalogComponent({ gender, type, priceFrom, priceTo, fil
         <div className="catalogComponent overflow-hidden">
             <div className="top flex items-center justify-between my-8 relative">
                 <h3 className="text-[32px] leading-10">
-                    {gender === 'men' ? 'Erkaklar uchun' : gender === 'woman' ? 'Ayollar uchun' : 'Katalog'}
+                    {gender === 'men'
+                        ? isUz ? 'Erkaklar uchun' : 'Для мужчин'
+                        : gender === 'woman'
+                            ? isUz ? 'Ayollar uchun' : 'Для женщин'
+                            : isUz ? 'Katalog' : 'Каталог'}
                 </h3>
                 <button
                     className={`flex items-center gap-x-1.5 px-4 py-3 h-[50px] border rounded-3xl font-medium transition-all duration-300 ease-in-out
                         absolute right-0 ${!openFilter ? 'translate-x-0' : 'translate-x-full'}`}
                     onClick={() => setOpenFilter(true)}
                 >
-                    Filter
+                    {isUz ? 'Filter' : 'Фильтр'}
                     <FilterIcon />
                 </button>
                 <div className={`box flex items-center justify-between h-[50px] transition-all duration-300 ease-in-out w-[282px] bg-white
@@ -69,13 +82,13 @@ export default function CatalogComponent({ gender, type, priceFrom, priceTo, fil
                         onClick={() => setOpenFilter(false)}
                     >
                         <CloseIcon />
-                        <p className='text-xl'>Filter</p>
+                        <p className='text-xl'>{isUz ? 'Filter' : 'Фильтр'}</p>
                     </button>
                     <button
                         className='text-primary-orange text-xs underline'
-                        onClick={() => handleResetFilter()}
+                        onClick={handleResetFilter}
                     >
-                        Reset Filter
+                        {isUz ? 'Filterni tozalash' : 'Сбросить фильтр'}
                     </button>
                 </div>
             </div>
@@ -83,10 +96,7 @@ export default function CatalogComponent({ gender, type, priceFrom, priceTo, fil
                 <div className={`flex ${openFilter ? 'gap-x-11' : ''}`}>
                     <div className={`flex-1 grid gap-x-6 gap-y-8 ${openFilter ? 'grid-cols-3' : 'grid-cols-4'}`}>
                         {currentPageProducts?.map((item) => (
-                            <div
-                                key={item.id}
-                                className="box"
-                            >
+                            <div key={item.id} className="box">
                                 <div className="img relative bg-[#F6F6F6] border rounded-[22px] aspect-[0.93] overflow-hidden">
                                     <Image
                                         fill
@@ -96,9 +106,12 @@ export default function CatalogComponent({ gender, type, priceFrom, priceTo, fil
                                     />
                                 </div>
                                 <div className="text mt-2.5">
-                                    <p className='font-medium truncate text-[22px] leading-[25px]'>
+                                    <Link
+                                        href={`/${locale}/catalog/product/${item.id}`}
+                                        className='font-medium truncate text-[22px] leading-[25px] block'
+                                    >
                                         {item.name}
-                                    </p>
+                                    </Link>
                                     <p className='text-primary-orange font-semibold text-lg leading-none mt-2.5'>
                                         {formatPrice(item.price)}
                                     </p>
@@ -107,14 +120,11 @@ export default function CatalogComponent({ gender, type, priceFrom, priceTo, fil
                                     className='font-medium text-lg leading-[21px] bg-primary-orange px-4 py-2 mt-2.5 text-white rounded-[20px]'
                                     onClick={() => handleAdd(item.id, 'l', 'red')}
                                 >
-                                    Savatga qo’shish +
+                                    {isUz ? "Savatga qo’shish +" : "Добавить в корзину +"}
                                 </button>
                             </div>
                         ))}
-                        <div
-                            className={`pagination flex items-center justify-center
-                                ${openFilter ? 'col-span-3' : 'col-span-4'}`}
-                        >
+                        <div className={`pagination flex items-center justify-center ${openFilter ? 'col-span-3' : 'col-span-4'}`}>
                             <Pagination
                                 count={totalPages}
                                 siblingCount={1}
@@ -127,12 +137,12 @@ export default function CatalogComponent({ gender, type, priceFrom, priceTo, fil
                                             previous: () => (
                                                 <span className="flex items-center gap-1">
                                                     <PagPrevIcon />
-                                                    Oldingi
+                                                    {isUz ? "Oldingi" : "Назад"}
                                                 </span>
                                             ),
                                             next: () => (
                                                 <span className="flex items-center gap-1">
-                                                    Keyingi
+                                                    {isUz ? "Keyingi" : "Вперёд"}
                                                     <PagNextIcon />
                                                 </span>
                                             ),
@@ -179,6 +189,7 @@ export default function CatalogComponent({ gender, type, priceFrom, priceTo, fil
                                 priceTo={priceTo}
                                 gender={gender}
                                 typedProducts={typedProducts}
+                                locale={locale}
                             />
                         </div>
                     </div>

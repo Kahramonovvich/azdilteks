@@ -1,11 +1,12 @@
 import Link from "next/link";
 import LinkArrowIcon from '@/icons/Arrow next page.svg'
 import BasketComponent from "@/components/BasketComponent";
-import { products } from "../../../products";
 import OrderModal from "@/components/OrderModal";
+import { products } from "../../../../products";
 
-export default function BasketPage() {
+export default async function BasketPage({ params }) {
 
+    const { locale } = await params;
     const productsOnBasket = products;
 
     return (
@@ -14,20 +15,23 @@ export default function BasketPage() {
             <div className="container">
                 <div className="top flex items-center gap-x-2 mt-[46px]">
                     <Link
-                        href={'/'}
+                        href={`/${locale}`}
                         className="font-medium text-[#A3A3A3]"
                     >
-                        Bosh sahifa
+                        {locale === 'uz' ? 'Bosh sahifa' : 'Главная страница'}
                     </Link>
                     <LinkArrowIcon />
                     <p className="font-medium">
-                        Savatcham
+                        {locale === 'uz' ? 'Savatcham' : 'Моя корзина'}
                     </p>
                 </div>
                 <h2 className="text-[32px] leading-10 mt-8">
-                    Savatcham
+                    {locale === 'uz' ? 'Savatcham' : 'Моя корзина'}
                 </h2>
-                <BasketComponent products={productsOnBasket} />
+                <BasketComponent
+                    products={productsOnBasket}
+                    locale={locale}
+                />
             </div>
         </div>
     );

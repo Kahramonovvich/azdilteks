@@ -2,40 +2,38 @@ export const navMenu = [
     {
         id: 1,
         menu: 'Bosh sahifa',
-        href: '/'
+        href: '/',
+        menuRu: 'Главная страница'
     },
     {
         id: 2,
         menu: 'Katalog',
-        href: '/catalog'
+        href: '/catalog',
+        menuRu: 'Каталог'
     },
     {
         id: 3,
         menu: 'Biz haqimizda',
-        href: '/about'
-    },
-    {
-        id: 4,
-        menu: 'Do’kon',
-        href: '/shop'
+        href: '/about',
+        menuRu: 'О нас'
     },
 ];
 
 export const industry = [
-    { name: 'Qurilish sohasi', slug: 'construction' },
-    { name: 'Restoran sohasi', slug: 'restaurant' },
-    { name: 'Ta’lim sohasi', slug: 'education' },
-    { name: 'Maxsus kiyimlar', slug: 'special-clothes' },
+    { name: 'Qurilish sohasi', slug: 'construction', nameRu: 'Строительство' },
+    { name: 'Restoran sohasi', slug: 'restaurant', nameRu: 'Рестораны' },
+    { name: 'Ta’lim sohasi', slug: 'education', nameRu: 'Образование' },
+    { name: 'Maxsus kiyimlar', slug: 'special-clothes', nameRu: 'Спецодежда' },
 ];
 
 export const clothesCategory = [
-    { id: 1, name: 'Bosh kiyim', slug: 'headwear' },
-    { id: 2, name: 'Kastyum', slug: 'suit' },
-    { id: 3, name: 'Kamzul', slug: 'vest' },
-    { id: 4, name: 'Shim', slug: 'trousers' },
-    { id: 5, name: 'Koylak', slug: 'shirt' },
-    { id: 6, name: 'Fartuk', slug: 'apron' },
-    { id: 7, name: 'Fudbolka', slug: 't-shirt' }
+    { id: 1, name: 'Bosh kiyim', nameRu: 'Головной убор', slug: 'headwear' },
+    { id: 2, name: 'Kastyum', nameRu: 'Костюм', slug: 'suit' },
+    { id: 3, name: 'Kamzul', nameRu: 'Жилет', slug: 'vest' },
+    { id: 4, name: 'Shim', nameRu: 'Брюки', slug: 'trousers' },
+    { id: 5, name: 'Koylak', nameRu: 'Рубашка', slug: 'shirt' },
+    { id: 6, name: 'Fartuk', nameRu: 'Фартук', slug: 'apron' },
+    { id: 7, name: 'Fudbolka', nameRu: 'Футболка', slug: 't-shirt' }
 ];
 
 export const colors = [

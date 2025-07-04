@@ -1,23 +1,26 @@
 'use client'
 import WideIcon from '@/icons/header wide.svg'
 import Image from 'next/image';
+import { useRouter } from 'nextjs-toploader/app'
 
-export default function Header() {
+export default function Header({ locale }) {
 
     const infoBox = [
         {
             count: '80+',
-            title: 'Restoran'
+            title: locale === 'uz' ? 'Restoran' : 'Ресторанов'
         },
         {
             count: '40+',
-            title: 'Ta’lim markazlari'
+            title: locale === 'uz' ? 'Ta’lim markazlari' : 'Образовательных центров'
         },
         {
             count: '60+',
-            title: 'Qurilish firmalari'
+            title: locale === 'uz' ? 'Qurilish firmalari' : 'Строительных компаний'
         },
     ];
+
+    const router = useRouter();
 
     return (
         <div className='header'>
@@ -35,24 +38,49 @@ export default function Header() {
                             />
                         </div>
                     </div>
-                    <h1 className="font-bold text-[54px] leading-[72px]">
-                        Sizning Restoraningiz
-                        <br />
-                        Uchun Maxsus Tikilgan
-                        <br />
-                        Forma.
+                    <h1 className="font-bold text-[54px] leading-[72px] capitalize">
+                        {locale === 'uz' ? (
+                            <>
+                                Sizning Restoraningiz
+                                <br />
+                                Uchun Maxsus Tikilgan
+                                <br />
+                                Forma.
+                            </>
+                        ) : (
+                            <>
+                                Специально сшитая
+                                <br />
+                                форма для вашего
+                                <br />
+                                ресторана и не только.
+                            </>
+                        )}
                     </h1>
                     <h2 className="text-[#525252] mt-2 mb-5">
-                        Biz korxonalar, maktablar, oshxonalar va tashkilotlar uchun
-                        <br />
-                        zamonaviy, chidamli va shinam uniformalarni tikib beramiz.
-                        <br />
-                        Sizning talab va uslubingizga mos ravishda.
+                        {locale === 'uz' ? (
+                            <>
+                                Biz korxonalar, maktablar, oshxonalar va tashkilotlar uchun
+                                <br />
+                                zamonaviy, chidamli va shinam uniformalarni tikib beramiz.
+                                <br />
+                                Sizning talab va uslubingizga mos ravishda.
+                            </>
+                        ) : (
+                            <>
+                                Мы шьём современную, удобную и прочную форму
+                                <br />
+                                для организаций, школ, столовых и предприятий.
+                                <br />
+                                Под ваш стиль и требования.
+                            </>
+                        )}
                     </h2>
                     <button
                         className="w-max bg-primary-orange font-medium text-white rounded-3xl px-10 py-4 mb-[67px]"
+                        onClick={() => router.push(`/${locale}/catalog`)}
                     >
-                        Katalog
+                        {locale === 'uz' ? 'Katalog' : 'Каталог'}
                     </button>
                     <div className="flex items-center gap-x-8">
                         {infoBox.map((item) => (

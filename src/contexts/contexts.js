@@ -9,6 +9,8 @@ export function GlobalProvider({ children }) {
     const [orderModal, setOrderModal] = useState(false);
     const [callBackModal, setCallBackModal] = useState(false);
     const [openFilter, setOpenFilter] = useState(false);
+    const [openDetails, setOpenDetails] = useState(false);
+    const [selectedId, setSelectedId] = useState('');
     const [cart, setCart] = useState(() => {
         if (typeof window !== 'undefined') {
             const stored = localStorage.getItem('cart');
@@ -111,6 +113,10 @@ export function GlobalProvider({ children }) {
             setCallBackModal,
             openFilter,
             setOpenFilter,
+            openDetails,
+            setOpenDetails,
+            selectedId,
+            setSelectedId,
         }}>
             {children}
         </GlobalContext.Provider>
