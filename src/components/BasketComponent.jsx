@@ -48,12 +48,12 @@ export default function BasketComponent({ products, locale }) {
             toast.error(isUz ? "Savatcha bo‘sh yoki mahsulot tanlanmagan!" : "Корзина пуста или не выбраны товары!");
         } else {
             setOrderModal(true);
-        }
+        };
     };
 
     return (
-        <div className="basketComponent mt-10">
-            <div className="flex gap-x-[52px]">
+        <div className="basketComponent lg:mt-10 mt-5">
+            <div className="lg:flex gap-x-[52px] hidden">
                 <div className="left flex-1">
                     <div className="top border-b py-7">
                         <div className="box grid grid-cols-2 items-center gap-x-6">
@@ -186,6 +186,110 @@ export default function BasketComponent({ products, locale }) {
                     <button
                         onClick={handleSendOrder}
                         className='bg-primary-orange rounded-3xl p-4 w-full text-white mt-12'
+                    >
+                        {isUz ? 'Buyurtma berish' : 'Оформить заказ'}
+                    </button>
+                </div>
+            </div>
+            <div className="lg:hidden flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                    <button
+                        className={`rounded-full w-4 h-4 flex items-center justify-center ${allChaked ? 'bg-primary-orange' : 'border'}`}
+                        onClick={handleCheckAll}
+                    >
+                        {allChaked && <CheckIcon />}
+                    </button>
+                    <p className="font-medium text-[#A3A3A3] text-base">
+                        {isUz ? 'Maxsulotlar' : 'Товары'}
+                    </p>
+                </div>
+                {productsOnBasket.map((item, index) => (
+                    <div key={index} className='border-t pt-4'>
+                        <div className="flex items-start gap-3">
+                            <button
+                                className={`rounded-full w-4 h-4 flex-shrink-0 flex items-center justify-center ${item.isChecked ? 'bg-primary-orange' : 'border'}`}
+                                onClick={() => toggleCheck(item.id, item.selectedOptions, !item.isChecked)}
+                            >
+                                {item.isChecked && <CheckIcon />}
+                            </button>
+                            <div className="relative w-24 aspect-[0.89] rounded-xl overflow-hidden">
+                                <Image
+                                    fill
+                                    src={item.image}
+                                    alt={item.name}
+                                    style={{ objectFit: 'contain' }}
+                                />
+                            </div>
+                            <div className="flex-1">
+                                <p className="font-semibold text-base leading-5 mb-1 truncate">
+                                    {item.name}
+                                </p>
+                                <p className="text-sm text-[#A3A3A3] mb-1">
+                                    {isUz ? 'O‘lcham:' : 'Размер:'} <span className="text-[#171717] font-medium uppercase">{item.selectedOptions.size}</span>
+                                </p>
+                                <div className="flex items-center gap-x-2 mb-2">
+                                    <p className="text-sm text-[#A3A3A3]">{isUz ? 'Rang:' : 'Цвет:'}</p>
+                                    <div
+                                        className={`w-4 h-4 rounded-full ${item.selectedOptions.color === 'white' ? 'border' : ''}`}
+                                        style={{ background: selectedColor(item.selectedOptions.color) }}
+                                    ></div>
+                                </div>
+                                <div className="flex flex-col gap-y-2">
+                                    <div className="flex items-center gap-x-1">
+                                        <button
+                                            onClick={() => item.quantity === 1
+                                                ? removeFromCart(item.id, item.selectedOptions)
+                                                : updateQuantity(item.id, item.selectedOptions, item.quantity - 1)}
+                                        >
+                                            <MinusIcon />
+                                        </button>
+                                        <div className="w-6 h-6 border rounded-full flex items-center justify-center">
+                                            {item.quantity}
+                                        </div>
+                                        <button
+                                            onClick={() => updateQuantity(item.id, item.selectedOptions, item.quantity + 1)}
+                                        >
+                                            <AddIcon />
+                                        </button>
+                                    </div>
+                                    <button
+                                        onClick={() => removeFromCart(item.id, item.selectedOptions)}
+                                        className="flex items-center gap-x-1"
+                                    >
+                                        <DeleteIcon />
+                                        <span className="text-sm font-medium">{isUz ? "O‘chirish" : "Удалить"}</span>
+                                    </button>
+                                </div>
+                                <div className="mt-3 font-semibold">
+                                    {formatPrice(item.price * item.quantity)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+                <div className="border rounded-2xl p-4">
+                    <p className="text-lg font-bold mb-2">
+                        {isUz ? 'Buyurtma xulosasi' : 'Сводка заказа'}
+                    </p>
+                    <p className="text-sm text-[#171717]">
+                        {isUz
+                            ? "Umumiy xarajat vaqtinchalik xarajatlardan iborat bo'lib, yuk tashish xarajatlarini hisobga olmaganda"
+                            : 'Общая стоимость является предварительной и не включает доставку'}
+                    </p>
+                    <div className="mt-4 flex flex-col gap-y-3">
+                        <div className="flex justify-between">
+                            <p className="text-sm text-[#525252]">{isUz ? 'Narx:' : 'Цена:'}</p>
+                            <p className="text-sm font-medium">{formatPrice(calculateTotalPrice(productsOnBasket))}</p>
+                        </div>
+                        <div className="border" />
+                        <div className="flex justify-between">
+                            <p className="text-sm text-[#525252]">{isUz ? 'Umumiy narx:' : 'Итоговая сумма:'}</p>
+                            <p className="text-sm font-semibold">{formatPrice(calculateTotalPrice(productsOnBasket))}</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleSendOrder}
+                        className="bg-primary-orange text-white text-sm w-full rounded-full py-3 mt-6"
                     >
                         {isUz ? 'Buyurtma berish' : 'Оформить заказ'}
                     </button>

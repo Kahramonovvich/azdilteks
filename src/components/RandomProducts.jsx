@@ -21,13 +21,13 @@ export default function RandomProducts({ products, id, locale }) {
 
     return (
         <div className="randomProducts mt-[60px]">
-            <div className="top mb-12">
-                <p className="text-5xl leading-[56px]">
+            <div className="top lg:mb-12 mb-4">
+                <p className="lg:text-5xl lg:leading-[56px] text-2xl">
                     {isUz ? 'Balkim yoqar' : 'Может заинтересовать'}
                 </p>
             </div>
             <div className="bottom">
-                <div className={`flex-1 grid gap-x-6 gap-y-8 grid-cols-4`}>
+                <div className={`flex-1 grid lg:gap-x-6 gap-x-3 gap-y-4 lg:gap-y-8 lg:grid-cols-4 grid-cols-2`}>
                     {randomProducts?.slice(0, 4).map((item) => (
                         <div
                             key={item.id}
@@ -44,16 +44,16 @@ export default function RandomProducts({ products, id, locale }) {
                             <div className="text mt-2.5">
                                 <Link
                                     href={`/${locale}/catalog/product/${item.id}`}
-                                    className='font-medium truncate text-[22px] leading-[25px] block'
+                                    className='font-medium truncate lg:text-[22px] lg:leading-[25px] block'
                                 >
                                     {item.name}
                                 </Link>
-                                <p className='text-primary-orange font-semibold text-lg leading-none mt-2.5'>
+                                <p className='text-primary-orange font-semibold lg:text-lg text-sm leading-none mt-2.5'>
                                     {formatPrice(item.price)}
                                 </p>
                             </div>
                             <button
-                                className='font-medium text-lg leading-[21px] bg-primary-orange px-4 py-2 mt-2.5 text-white rounded-[20px]'
+                                className='font-medium lg:text-lg lg:leading-[21px] bg-primary-orange lg:px-4 lg:py-2 w-full lg:w-auto p-2 text-sm mt-2.5 text-white rounded-[20px]'
                                 onClick={() => {
                                     setOpenDetails(true);
                                     setSelectedId(item.id);

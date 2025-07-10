@@ -24,23 +24,14 @@ export default function CatalogComponent({
 }) {
 
     const router = useRouter();
-    const { openFilter, setOpenFilter, addToCart } = useGlobalContext();
-    
+    const { openFilter, setOpenFilter, setOpenDetails, setSelectedId } = useGlobalContext();
+
     const isUz = locale === 'uz';
     const productsPerView = openFilter ? 9 : 12;
     const totalPages = Math.ceil(filteredProducts.length / productsPerView);
     const startIndex = ((Number(page) || 1) - 1) * productsPerView;
     const endIndex = startIndex + productsPerView;
     const currentPageProducts = filteredProducts.slice(startIndex, endIndex);
-
-    const handleAdd = (id, size, color) => {
-        const added = addToCart(id, { size, color });
-        if (added) {
-            toast.success(isUz ? "Mahsulot savatchaga qo`shildi!" : "Товар добавлен в корзину!");
-        } else {
-            toast.warning(isUz ? "Bu mahsulot savatchada mavjud!" : "Этот товар уже в корзине!");
-        }
-    };
 
     const handleResetFilter = () => {
         const href = `/${locale}/catalog${gender ? `/${gender}` : ''}`;
@@ -60,7 +51,7 @@ export default function CatalogComponent({
     return (
         <div className="catalogComponent overflow-hidden">
             <div className="top flex items-center justify-between my-8 relative">
-                <h3 className="text-[32px] leading-10">
+                <h3 className="lg:text-[32px] lg:leading-10 text-2xl">
                     {gender === 'men'
                         ? isUz ? 'Erkaklar uchun' : 'Для мужчин'
                         : gender === 'woman'
@@ -68,15 +59,16 @@ export default function CatalogComponent({
                             : isUz ? 'Katalog' : 'Каталог'}
                 </h3>
                 <button
-                    className={`flex items-center gap-x-1.5 px-4 py-3 h-[50px] border rounded-3xl font-medium transition-all duration-300 ease-in-out
-                        absolute right-0 ${!openFilter ? 'translate-x-0' : 'translate-x-full'}`}
+                    className={`flex items-center gap-x-1.5 lg:px-4 lg:py-3 p-2 lg:h-[50px] border rounded-3xl font-medium
+                        transition-all duration-300 ease-in-out absolute right-0
+                        ${!openFilter ? 'translate-x-0' : 'translate-x-full'}`}
                     onClick={() => setOpenFilter(true)}
                 >
                     {isUz ? 'Filter' : 'Фильтр'}
                     <FilterIcon />
                 </button>
-                <div className={`box flex items-center justify-between h-[50px] transition-all duration-300 ease-in-out w-[282px] bg-white
-                    ${openFilter ? 'translate-x-0' : 'translate-x-full'}`}
+                <div className={`box flex items-center justify-between h-[50px] transition-all duration-300 ease-in-out lg:w-[282px] bg-white
+                    absolute lg:relative w-full ${openFilter ? 'translate-x-0' : 'translate-x-full'}`}
                 >
                     <button className='flex items-center gap-x-3'
                         onClick={() => setOpenFilter(false)}
@@ -93,10 +85,12 @@ export default function CatalogComponent({
                 </div>
             </div>
             <div className="bottom relative">
-                <div className={`flex ${openFilter ? 'gap-x-11' : ''}`}>
-                    <div className={`flex-1 grid gap-x-6 gap-y-8 ${openFilter ? 'grid-cols-3' : 'grid-cols-4'}`}>
+                <div className={`flex ${openFilter ? 'lg:gap-x-11' : ''}`}>
+                    <div className={`flex-1 grid lg:gap-x-6 gap-x-3 lg:gap-y-8 gap-y-4
+                        ${openFilter ? 'lg:grid-cols-3 grid-cols-2' : 'lg:grid-cols-4 grid-cols-2'}`}
+                    >
                         {currentPageProducts?.map((item) => (
-                            <div key={item.id} className="box">
+                            <div key={item.id} className="box overflow-hidden">
                                 <div className="img relative bg-[#F6F6F6] border rounded-[22px] aspect-[0.93] overflow-hidden">
                                     <Image
                                         fill
@@ -108,23 +102,26 @@ export default function CatalogComponent({
                                 <div className="text mt-2.5">
                                     <Link
                                         href={`/${locale}/catalog/product/${item.id}`}
-                                        className='font-medium truncate text-[22px] leading-[25px] block'
+                                        className='font-medium truncate lg:text-[22px] lg:leading-[25px] block'
                                     >
                                         {item.name}
                                     </Link>
-                                    <p className='text-primary-orange font-semibold text-lg leading-none mt-2.5'>
+                                    <p className='text-primary-orange font-semibold lg:text-lg text-sm leading-none mt-2.5'>
                                         {formatPrice(item.price)}
                                     </p>
                                 </div>
                                 <button
-                                    className='font-medium text-lg leading-[21px] bg-primary-orange px-4 py-2 mt-2.5 text-white rounded-[20px]'
-                                    onClick={() => handleAdd(item.id, 'l', 'red')}
+                                    className='font-medium lg:text-lg lg:leading-[21px] text-sm bg-primary-orange lg:px-4 lg:py-2 w-full p-2 lg:w-auto mt-2.5 text-white rounded-[20px]'
+                                    onClick={() => {
+                                        setOpenDetails(true);
+                                        setSelectedId(item.id);
+                                    }}
                                 >
                                     {isUz ? "Savatga qo’shish +" : "Добавить в корзину +"}
                                 </button>
                             </div>
                         ))}
-                        <div className={`pagination flex items-center justify-center ${openFilter ? 'col-span-3' : 'col-span-4'}`}>
+                        <div className={`pagination flex items-center justify-center ${openFilter ? 'lg:col-span-3 col-span-2' : 'lg:col-span-4 col-span-2'}`}>
                             <Pagination
                                 count={totalPages}
                                 siblingCount={1}
@@ -137,12 +134,16 @@ export default function CatalogComponent({
                                             previous: () => (
                                                 <span className="flex items-center gap-1">
                                                     <PagPrevIcon />
-                                                    {isUz ? "Oldingi" : "Назад"}
+                                                    <span className="hidden sm:inline">
+                                                        {isUz ? "Oldingi" : "Назад"}
+                                                    </span>
                                                 </span>
                                             ),
                                             next: () => (
                                                 <span className="flex items-center gap-1">
-                                                    {isUz ? "Keyingi" : "Вперёд"}
+                                                    <span className="hidden sm:inline">
+                                                        {isUz ? "Keyingi" : "Вперёд"}
+                                                    </span>
                                                     <PagNextIcon />
                                                 </span>
                                             ),
@@ -174,13 +175,22 @@ export default function CatalogComponent({
                                     '& .MuiPaginationItem-ellipsis': {
                                         border: 'none'
                                     },
+                                    '@media (max-width: 640px)': {
+                                        '& .MuiPagination-ul': {
+                                            columnGap: '8px'
+                                        },
+                                        '& .MuiPaginationItem-previousNext': {
+                                            border: '1px solid #E5E5E5',
+                                            width: '32px'
+                                        },
+                                    }
                                 }}
                                 onChange={onPageChange}
                             />
                         </div>
                     </div>
-                    <div className={`filter w-[282px] right-0 ${openFilter ? 'relative' : 'absolute'}`}>
-                        <div className={`filterBox w-[282px] bg-white duration-300 ease-in-out transition-all
+                    <div className={`filter lg:w-[282px] w-full absolute right-0 ${openFilter ? 'lg:relative' : 'lg:absolute'}`}>
+                        <div className={`filterBox lg:w-[282px] w-full bg-white duration-300 ease-in-out transition-all
                             ${openFilter ? 'translate-x-0' : 'translate-x-full'}`}
                         >
                             <Filter

@@ -11,7 +11,7 @@ import ResizeIcon from '@/icons/resize.svg'
 import Image from "next/image";
 
 export default function ProductComponent({ product, locale }) {
-    
+
     const isUz = locale === 'uz';
     const info = [
         { icon: <ShieldIcon />, text: isUz ? 'Xavfsiz to`lov' : 'Безопасная оплата' },
@@ -51,11 +51,14 @@ export default function ProductComponent({ product, locale }) {
 
     return (
         <div className="productComponent">
-            <div className="flex gap-x-24">
-                <div className="left flex-1 max-w-[655px] flex gap-x-4">
-                    <div className="images flex flex-col gap-y-4">
+            <div className="flex flex-col lg:flex-row lg:gap-x-24 gap-y-5">
+                <div className="left flex-1 lg:max-w-[655px] w-full flex lg:flex-row flex-col-reverse lg:gap-x-4 gap-y-4">
+                    <div className="images flex lg:flex-col lg:gap-y-4 gap-x-4">
                         {[...Array(4)].map((_, i) => (
-                            <div key={i} className="img relative aspect-square bg-[#F5F5F5] w-[109px] rounded-lg overflow-hidden cursor-pointer">
+                            <div
+                                key={i}
+                                className="img relative aspect-square bg-[#F5F5F5] lg:w-[109px] w-full rounded-lg overflow-hidden cursor-pointer"
+                            >
                                 <Image
                                     fill
                                     src={product.image}
@@ -76,14 +79,14 @@ export default function ProductComponent({ product, locale }) {
                                 />
                             </div>
                         </div>
-                        <div className="scroll w-0.5 bg-[#E5E5E5] rounded-sm"></div>
+                        <div className="scroll w-0.5 hidden lg:block bg-[#E5E5E5] rounded-sm"></div>
                     </div>
                 </div>
                 <div className="right">
-                    <h3 className="text-[32px] leading-10 mb-[70px]">
+                    <h3 className="text-[32px] leading-10 lg:mb-[70px] mb-5">
                         {product.name}
                     </h3>
-                    <div className="size mb-8">
+                    <div className="size lg:mb-8 mb-4">
                         <p className="text-lg leading-[26px] mb-4">
                             {isUz ? 'O‘lchamni tanlash' : 'Выберите размер'}
                         </p>
@@ -106,7 +109,7 @@ export default function ProductComponent({ product, locale }) {
                             ))}
                         </div>
                     </div>
-                    <div className="color mb-14">
+                    <div className="color lg:mb-14 mb-4">
                         <p className="text-lg leading-[26px] mb-4">
                             {isUz ? 'Ranglar' : 'Цвета'}
                         </p>
@@ -126,18 +129,18 @@ export default function ProductComponent({ product, locale }) {
                             ))}
                         </div>
                     </div>
-                    <div className="price flex items-center gap-x-4 mb-10">
-                        <div className="box border px-8 py-4 rounded-[32px] font-medium">
+                    <div className="price flex lg:flex-row flex-col gap-y-4 items-center gap-x-4 lg:mb-10 mb-5">
+                        <div className="box border px-8 py-4 rounded-[32px] font-medium w-full text-center lg:text-start lg:w-auto">
                             {formatPrice(product.price)}
                         </div>
                         <button
-                            className=" bg-primary-orange border border-primary-orange px-[67px] py-4 rounded-[32px] text-white"
+                            className=" bg-primary-orange border border-primary-orange px-[67px] py-4 rounded-[32px] text-white w-full lg:w-auto"
                             onClick={() => handleAdd(product.id, selectedSize, selectedColor)}
                         >
                             {isUz ? "Savatga qo‘shish +" : "Добавить в корзину +"}
                         </button>
                     </div>
-                    <div className="border-t w-full mb-8"></div>
+                    <div className="border-t w-full lg:mb-8 mb-4"></div>
                     <div className="info flex flex-col gap-y-5">
                         {info.map((item, index) => (
                             <div key={index} className="box flex items-center gap-x-2">
@@ -158,8 +161,8 @@ export default function ProductComponent({ product, locale }) {
                         </p>
                     </div>
                 </div>
-                <div className="box mt-6 grid grid-cols-12">
-                    <p className="text-lg leading-[26px] col-span-8">
+                <div className="box mt-6 lg:grid grid-cols-12">
+                    <p className="lg:text-lg lg:leading-[26px] lg:col-span-8">
                         {product.description}
                     </p>
                 </div>

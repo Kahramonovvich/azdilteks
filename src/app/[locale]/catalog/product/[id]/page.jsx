@@ -13,22 +13,22 @@ export default async function ProductPage({ params }) {
     return (
         <div className="productPage">
             <div className="container">
-                <div className="top mt-10 flex items-center gap-x-2">
+                <div className="top lg:mt-10 flex items-center lg:gap-x-2">
                   <Link
                         href={`/${locale}`}
-                        className="font-medium text-[#A3A3A3]"
+                        className="font-medium text-[#A3A3A3] lg:text-base text-sm truncate"
                     >
                         {locale === 'uz' ? 'Bosh sahifa' : 'Главная страница'}
                     </Link>
                     <LinkArrowIcon />
                     <Link
                         href={`/${locale}/catalog`}
-                        className="font-medium text-[#A3A3A3]"
+                        className="font-medium text-[#A3A3A3] lg:text-base text-sm"
                     >
                         {locale === 'uz' ? 'Katalog' : 'Каталог'}
                     </Link>
                     <LinkArrowIcon />
-                    <p className="font-medium truncate">
+                    <p className="font-medium truncate lg:text-base text-sm">
                         {product?.name}
                     </p>
                 </div>

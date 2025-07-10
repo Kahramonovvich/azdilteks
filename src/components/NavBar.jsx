@@ -12,6 +12,9 @@ import CallBackModal from './CallBackModal'
 import { useGlobalContext } from '@/contexts/contexts'
 import "flag-icons/css/flag-icons.min.css";
 import { usePathname, useSearchParams } from 'next/navigation'
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import LogoMini from '@/icons/footer logo.svg'
+import PhoneIcon from '@/icons/eva_phone-call-fill.svg'
 
 export default function NavBar({ locale }) {
 
@@ -26,6 +29,7 @@ export default function NavBar({ locale }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [searched, setSearched] = useState([]);
     const [openLanguage, setOpenLanguage] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -75,17 +79,22 @@ export default function NavBar({ locale }) {
         };
     }, [focused]);
 
+    useEffect(() => {
+        setMobileMenuOpen(false);
+    }, [pathname]);
+
     return (
-        <nav className={`nav relative py-6`}>
+        <nav className={`nav relative lg:py-6 py-3 bg-white`}>
             <CallBackModal />
             <div className="container">
                 <div className="flex items-center justify-between">
                     <Link
                         href={`/${locale}`}
                         className="logo">
-                        <Logo />
+                        <Logo className='hidden lg:block' />
+                        <LogoMini className='block lg:hidden' />
                     </Link>
-                    <div className="center flex items-center gap-x-12">
+                    <div className="center hidden lg:flex items-center gap-x-12">
                         {navMenu.map((item) => (
                             <div
                                 key={item.id}
@@ -97,7 +106,6 @@ export default function NavBar({ locale }) {
                                 >
                                     {locale === 'uz' ? item.menu : item.menuRu}
                                 </Link>
-
                                 {item.href === '/catalog' && (
                                     <div
                                         className="absolute overflow-hidden top-full right-1/2 translate-x-1/2 mt-4 z-20 opacity-0 invisible
@@ -121,7 +129,7 @@ export default function NavBar({ locale }) {
                             </div>
                         ))}
                     </div>
-                    <div className={`flex items-center gap-x-2 relative`}>
+                    <div className={`lg:flex items-center gap-x-2 relative hidden`}>
                         <form
                             onSubmit={handleSearch}
                             className={`border rounded-3xl px-4 h-12 flex items-center gap-x-2 w-[205px] overflow-hidden transition-all duration-300
@@ -172,6 +180,66 @@ export default function NavBar({ locale }) {
                             <button
                                 onClick={() => handleLanguage('ru')}
                                 className='font-medium p-3 flex items-center gap-x-2 hover:bg-primary-orange hover:text-white transition-all duration-300 ease-in-out w-full'
+                            >
+                                <span className="fi fi-ru drop-shadow rounded-sm"></span>
+                                Русский
+                            </button>
+                        </div>
+                    </div>
+                    <div className="left lg:hidden flex items-center gap-x-3">
+                        <button
+                            className='flex items-center justify-center'
+                            onClick={() => setCallBackModal(true)}
+                        >
+                            <PhoneIcon />
+                        </button>
+                        <button
+                            className="burger flex items-center justify-center"
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        >
+                            <MenuRoundedIcon className='!text-3xl' />
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div
+                className={`absolute top-full left-0 z-20 w-full transition-all duration-300 ease-in-out lg:hidden bg-white
+                        ${!mobileMenuOpen ? '-translate-x-full' : ''}`}
+            >
+                <div className="container">
+                    <div className="bg-white pb-5 flex flex-col gap-y-2">
+                        {navMenu.map((item) => (
+                            <div
+                                key={item.id}
+                                className={`relative group`}
+                            >
+                                <Link
+                                    href={`/${locale}${item.href}`}
+                                    className='font-medium'
+                                >
+                                    {locale === 'uz' ? item.menu : item.menuRu}
+                                </Link>
+                            </div>
+                        ))}
+                        <div className="box flex items-center">
+                            <Link
+                                className="box flex items-center justify-center font-medium"
+                                href={`/${locale}/basket`}
+                            >
+                                {locale === 'uz' ? ' Savatchangiz' : 'Корзина'}
+                            </Link>
+                        </div>
+                        <div className={`language flex flex-col gap-y-2`}>
+                            <button
+                                onClick={() => handleLanguage('uz')}
+                                className='font-medium flex items-center gap-x-2 w-full'
+                            >
+                                <span className="fi fi-uz drop-shadow rounded-sm"></span>
+                                O’zbek
+                            </button>
+                            <button
+                                onClick={() => handleLanguage('ru')}
+                                className='font-medium flex items-center gap-x-2 w-full'
                             >
                                 <span className="fi fi-ru drop-shadow rounded-sm"></span>
                                 Русский

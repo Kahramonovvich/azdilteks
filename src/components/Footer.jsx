@@ -1,6 +1,6 @@
 'use client'
 import { navMenu } from '@/constants/constants';
-import Logo from '@/icons/footer logo.svg'
+import Logo from '@/icons/footer logo.svg';
 import Link from 'next/link';
 
 export default function Footer({ locale }) {
@@ -8,13 +8,13 @@ export default function Footer({ locale }) {
 
     const info = [
         {
-            menu: isUz ? 'FAQ' : 'Часто задаваемые вопросы'
+            menu: isUz ? 'FAQ' : 'Часто задаваемые вопросы',
         },
         {
-            menu: isUz ? 'Maxfiylik siyosati' : 'Политика конфиденциальности'
+            menu: isUz ? 'Maxfiylik siyosati' : 'Политика конфиденциальности',
         },
         {
-            menu: isUz ? 'Foydalanish shartlari' : 'Условия использования'
+            menu: isUz ? 'Foydalanish shartlari' : 'Условия использования',
         },
     ];
 
@@ -27,18 +27,21 @@ export default function Footer({ locale }) {
     return (
         <footer className="my-[60px]">
             <div className="container">
-                <div className="flex justify-between gap-x-28">
-                    <div className="logo max-w-[266px]">
+                <div className="flex flex-col lg:flex-row gap-10 lg:gap-x-28">
+                    {/* Logo и описание */}
+                    <div className="logo max-w-full lg:max-w-[266px]">
                         <Logo />
-                        <p className='mt-4 text-[#525252]'>
+                        <p className="mt-4 text-[#525252] text-sm lg:text-base">
                             {isUz
                                 ? 'Kompaniyamiz restoranlar, shifoxonalar, ta’lim muassasalari, qurilish sohalari va boshqa ko‘plab yo‘nalishlar uchun maxsus kiyimlar ishlab chiqarishga ixtisoslashgan.'
                                 : 'Наша компания специализируется на производстве спецодежды для ресторанов, больниц, образовательных учреждений, строительных отраслей и других направлений.'}
                         </p>
                     </div>
-                    <div className="text flex flex-1 justify-between">
+
+                    {/* Меню */}
+                    <div className="text flex flex-col sm:flex-row gap-8 flex-1 justify-between">
                         <div className="box">
-                            <ul className='flex flex-col gap-y-4'>
+                            <ul className="flex flex-col gap-y-4">
                                 {navMenu.map((item) => (
                                     <li key={item.id}>
                                         <Link href={`/${locale}${item.href}`}>
@@ -49,7 +52,7 @@ export default function Footer({ locale }) {
                             </ul>
                         </div>
                         <div className="box">
-                            <ul className='flex flex-col gap-y-4'>
+                            <ul className="flex flex-col gap-y-4">
                                 {info.map((item, index) => (
                                     <li key={index}>
                                         <p>{item.menu}</p>
@@ -58,7 +61,7 @@ export default function Footer({ locale }) {
                             </ul>
                         </div>
                         <div className="box">
-                            <ul className='flex flex-col gap-y-4'>
+                            <ul className="flex flex-col gap-y-4">
                                 {socials.map((item, index) => (
                                     <li key={index}>
                                         <p>{item.menu}</p>
@@ -71,4 +74,4 @@ export default function Footer({ locale }) {
             </div>
         </footer>
     );
-};
+}
