@@ -2,8 +2,13 @@
 import { navMenu } from '@/constants/constants';
 import Logo from '@/icons/footer logo.svg';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Footer({ locale }) {
+
+    const pathname = usePathname();
+    if (pathname?.startsWith(`/${locale}/admin`) || pathname?.startsWith(`/${locale}/login`)) return null;
+
     const isUz = locale === 'uz';
 
     const info = [

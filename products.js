@@ -166,10 +166,8 @@ export const products = [
       "mustard",
       "light-gray"],
     category: "suit",
-    industry: "restaurant"
-    ,
-    sex: "woman"
-    ,
+    industry: "restaurant",
+    sex: "woman",
     description: "Ta’lim uchun forma — bu ayol-lar uchun mo‘ljallangan restaurant sohasida foydalaniladigan suit. Zamonaviy dizayn va qulaylikni birlashtirgan ushbu mahsulot sizga ishonch bag‘ishlaydi."
   },
   {

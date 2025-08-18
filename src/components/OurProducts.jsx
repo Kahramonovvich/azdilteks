@@ -27,22 +27,22 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
         women: locale === 'ru' ? 'Для женщин' : 'Ayollar uchun',
         all: locale === 'ru' ? 'Все' : 'Barchasi',
         addToCart: locale === 'ru' ? 'Добавить в корзину +' : 'Savatga qo’shish +',
-    };    
+    };
 
     return (
-        <div className="ourProducts mt-[60px]">
+        <div className="ourProducts mt-[60px] overflow-hidden">
             <div className="container">
                 <div className="top">
-                    <h3 className="text-5xl leading-[56px]">
+                    <h3 className="lg:text-5xl lg:leading-[56px] text-2xl">
                         {texts.title}
                     </h3>
                     <div className="flex items-center gap-x-5 mt-12">
-                        <div className="dropDown cursor-pointer rounded-3xl border px-5 py-3 relative">
+                        <div className="dropDown cursor-pointer rounded-3xl border lg:px-5 lg:py-3 p-3 relative">
                             <div
                                 className="box flex items-center gap-x-2"
                                 onClick={() => setDropDown(!dropDown)}
                             >
-                                <p className='font-medium'>
+                                <p className='font-medium lg:text-base text-sm text-nowrap'>
                                     {sex === 'men' ? texts.men : texts.women}
                                 </p>
                                 <DropDownIcon
@@ -54,7 +54,7 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                                     ${dropDown ? 'max-h-60 border' : 'max-h-0'}`}
                             >
                                 <button
-                                    className='hover:bg-slate-200 text-left px-5 py-3 w-full font-medium'
+                                    className='hover:bg-slate-200 text-left lg:px-5 lg:py-3 p-3 w-full font-medium lg:text-base text-sm text-nowrap'
                                     onClick={() => {
                                         setSex('men');
                                         setDropDown(false);
@@ -64,7 +64,7 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                                     {texts.men}
                                 </button>
                                 <button
-                                    className='hover:bg-slate-200 text-left px-5 py-3 w-full font-medium'
+                                    className='hover:bg-slate-200 text-left lg:px-5 lg:py-3 p-3 w-full font-medium lg:text-base text-sm text-nowrap'
                                     onClick={() => {
                                         setSex('woman');
                                         setDropDown(false);
@@ -80,7 +80,7 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                                 router.push(`/${locale}/?${sex ? `gender=${sex}` : ''}`);
                                 setActiveIndustry('all');
                             }}
-                            className={`font-medium px-5 py-3 rounded-3xl ${activeIndustry === 'all' ? 'bg-black text-white' : ''}`}
+                            className={`font-medium lg:px-5 lg:py-3 p-3 text-nowrap text-sm lg:text-base rounded-3xl ${activeIndustry === 'all' ? 'bg-black text-white' : ''}`}
                         >
                             {texts.all}
                         </button>
@@ -91,16 +91,17 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                                     router.push(`/${locale}/?${sex ? `gender=${sex}&` : ''}industry=${item.slug}`);
                                     setActiveIndustry(item.slug);
                                 }}
-                                className={`font-medium px-5 py-3 rounded-3xl ${activeIndustry === item.slug ? 'bg-black text-white' : ''}`}
+                                className={`font-medium lg:px-5 lg:py-3 p-3 lg:text-base text-sm rounded-3xl text-nowrap
+                                    ${activeIndustry === item.slug ? 'bg-black text-white' : ''}`}
                             >
                                 {locale === 'ru' ? item.nameRu : item.name}
                             </button>
                         ))}
                     </div>
                 </div>
-                <div className="bottom mt-6 grid grid-cols-3 gap-x-6">
+                <div className="bottom mt-6 grid lg:grid-cols-3 lg:gap-x-6 gap-x-1.5 grid-cols-2">
                     {selectedProducts.slice(0, 3).map((item, index) => (
-                        <div className="box" key={index}>
+                        <div className="box last-of-type:hidden lg:last-of-type:block" key={index}>
                             <div className="img relative aspect-[0.842] border rounded-[32px] bg-[#F6F6F6] overflow-hidden">
                                 <Image
                                     fill
@@ -109,18 +110,18 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                                     style={{ objectFit: 'contain' }}
                                 />
                             </div>
-                            <div className="bottom mt-[15px]">
+                            <div className="bottom lg:mt-[15px] mt-1.5">
                                 <Link
                                     href={`${locale}/catalog/product/${item.id}`}
-                                    className='name font-medium text-2xl mb-1 text-nowrap truncate block'
+                                    className='name font-medium lg:text-2xl mb-1 text-nowrap truncate block'
                                 >
                                     {item.name}
                                 </Link>
-                                <p className='text-primary-orange text-lg leading-[26px] font-semibold'>
+                                <p className='text-primary-orange lg:text-lg lg:leading-[26px] font-semibold text-sm'>
                                     {formatPrice(item.price)}
                                 </p>
                                 <button
-                                    className='text-white bg-primary-orange rounded-[32px] px-6 py-3 mt-[27px] font-medium'
+                                    className='text-white bg-primary-orange rounded-[32px] lg:px-6 lg:py-3 px-2.5 py-1.5 lg:mt-[27px] mt-1.5 font-medium lg:text-base text-xs'
                                     onClick={() => {
                                         setOpenDetails(true);
                                         setSelectedId(item.id);

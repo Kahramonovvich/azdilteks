@@ -7,53 +7,53 @@ import RightBottomWildIcon from '@/icons/right bottom wide.svg'
 import RedWildIcon from '@/icons/red wide.svg'
 
 export default function AboutUs({ margin, locale }) {
+    
     const isUz = locale === 'uz';
 
     return (
-        <div className={`aboutUs mt-[${margin ? `${margin}px` : '90px'}]`}>
+        <div className={`aboutUs mt-5 lg:mt-[${margin ? `${margin}px` : '90px'}]`}>
             <div className="container">
-                <div className="top grid grid-cols-2 items-center">
-                    <h3 className="text-5xl leading-[56px]">
+                <div className="top lg:grid grid-cols-2 items-center">
+                    <h3 className="lg:text-5xl lg:leading-[56px] text-2xl mb-2 lg:mb-0">
                         {isUz ? 'Biz haqimizda' : 'О нас'}
                     </h3>
-                    <p className="text-[#525252]">
+                    <p className="text-[#525252] lg:text-base text-sm">
                         {isUz
                             ? `Bu yillik tajriba, mukammal jamoa va eng muhimi, halollik va sifatga bo‘lgan sadoqatdir. Kompaniyamiz restoranlar, shifoxonalar, ta’lim muassasalari, qurilish sohalari va boshqa ko‘plab yo‘nalishlar uchun maxsus kiyimlar ishlab chiqarishga ixtisoslashgan.`
                             : `Это многолетний опыт, слаженная команда и, главное, преданность честности и качеству. Наша компания специализируется на производстве спецодежды для ресторанов, больниц, образовательных учреждений, строительных сфер и многих других направлений.`}
                     </p>
                 </div>
-
-                <div className="bottom mt-16 grid grid-cols-12 grid-rows-2 gap-6">
-                    <div className="left col-span-7 row-span-2 bg-[#F6F6F6] rounded-3xl pt-10 pl-8 relative flex gap-x-2">
+                <div className="bottom lg:mt-16 mt-2.5 grid grid-cols-12 grid-rows-2 lg:gap-6 gap-3">
+                    <div className="left lg:col-span-7 col-span-12 lg:row-span-2 bg-[#F6F6F6] rounded-3xl lg:pt-10 lg:pl-8 relative flex gap-x-2 py-4 lg:pb-0 px-6 lg:pr-0">
                         <div className="absolute bottom-0 left-0">
                             <LeftDownWildIcon />
                         </div>
                         <div className="absolute top-3 right-0">
                             <LeftTopWildIcon />
                         </div>
-                        <div className="text max-w-[340px]">
-                            <h3 className="text-[64px] leading-[72px]">
+                        <div className="text lg:max-w-[340px] max-w-[157px]">
+                            <h3 className="lg:text-[64px] lg:leading-[72px] text-2xl">
                                 {isUz ? 'Eng sifatli maxsulotlar' : 'Продукция наивысшего качества'}
                             </h3>
-                            <ul className="flex flex-col gap-y-4 mt-4">
-                                <li className="text-[#525252]">
+                            <ul className="flex flex-col lg:gap-y-4 lg:mt-4 mt-1.5 gap-y-1.5">
+                                <li className="text-[#525252] lg:text-base text-xs leading-none">
                                     {isUz ? 'Yevropa sifatiga teng tikuv texnologiyasi' : 'Швейные технологии на уровне Европы'}
                                 </li>
-                                <li className="text-[#525252]">
+                                <li className="text-[#525252] lg:text-base text-xs leading-none">
                                     {isUz ? 'Tajribali tikuvchilar jamoasi' : 'Команда опытных швей'}
                                 </li>
-                                <li className="text-[#525252]">
+                                <li className="text-[#525252] lg:text-base text-xs leading-none">
                                     {isUz ? 'Har bir mijoz uchun alohida yondashuv' : 'Индивидуальный подход к каждому клиенту'}
                                 </li>
-                                <li className="text-[#525252]">
+                                <li className="text-[#525252] lg:text-base text-xs leading-none">
                                     {isUz ? 'Brending va logotip bilan maxsus tikuv' : 'Индивидуальный пошив с брендингом и логотипом'}
                                 </li>
                             </ul>
-                            <button className="bg-[#171717] text-white rounded-[20px] px-10 py-3 mt-10 relative">
+                            <button className="bg-[#171717] text-white rounded-[20px] lg:px-10 lg:py-3 lg:mt-10 relative py-2.5 px-[34px] mt-4">
                                 {isUz ? 'Ko’rish' : 'Смотреть'}
                             </button>
                         </div>
-                        <div className="img relative aspect-[0.59] max-w-[280px]">
+                        <div className="img relative aspect-[0.59] lg:max-w-[280px] flex-1">
                             <Image
                                 fill
                                 src={'/images/aboutImg.png'}
@@ -62,20 +62,19 @@ export default function AboutUs({ margin, locale }) {
                             />
                         </div>
                     </div>
-
-                    <div className="rightTop col-span-5 row-span-1 bg-[#F6F6F6] rounded-3xl relative p-6 pb-0 flex">
+                    <div className="rightTop lg:col-span-5 col-span-6 row-span-1 bg-[#F6F6F6] rounded-3xl relative lg:p-6 pb-0 pl-4 pt-4 flex flex-col lg:flex-row justify-between">
                         <div className="absolute bottom-0 left-0">
                             <RightBottomWildIcon />
                         </div>
                         <div className="absolute top-2 right-5">
                             <RightTopWildIcon />
                         </div>
-                        <div className="text max-w-[263px] text-2xl leading-[130%]">
+                        <div className="text lg:max-w-[263px] lg:text-2xl lg:leading-[130%] lg:font-normal font-semibold text-xs">
                             {isUz
                                 ? 'Doimiy takomillashuv, mijoz fikrlariga ochiqlik va innovatsion yondashuv'
                                 : 'Постоянное развитие, открытость отзывам клиентов и инновационный подход'}
                         </div>
-                        <div className="img relative aspect-[0.77]">
+                        <div className="img relative aspect-[0.77] max-w-[100px] lg:max-w-max">
                             <Image
                                 fill
                                 src={'/images/aboutImg 2.png'}
@@ -83,8 +82,7 @@ export default function AboutUs({ margin, locale }) {
                             />
                         </div>
                     </div>
-
-                    <div className="rightBottom bg-primary-orange col-span-5 rounded-3xl flex items-center gap-x-2.5 p-8 text-[#E2DBCB]">
+                    <div className="rightBottom bg-primary-orange lg:col-span-5 col-span-6 rounded-3xl flex items-center gap-x-2.5 p-8 text-[#E2DBCB]">
                         <div className="text flex-1">
                             <p className='text-2xl text-nowrap'>
                                 {isUz ? 'Kompaniyamiz qadriyatlari' : 'Наши ценности'}

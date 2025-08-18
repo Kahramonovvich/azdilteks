@@ -1,0 +1,119 @@
+import axios from "axios";
+import FormData from "form-data";
+import { cookies } from "next/headers";
+import { revalidateTag } from "next/cache";
+
+export const runtime = "nodejs";
+
+export async function POST(req) {
+  try {
+    const inForm = await req.formData();
+
+    // читаем как пришло
+    const Price            = inForm.get("Price");
+    const ColorAll         = inForm.getAll("Color");          // может быть несколько
+    const SizeAll          = inForm.getAll("Size");           // может быть несколько
+    const Category         = inForm.get("Category");
+    const Industry         = inForm.get("Industry");
+    const Gender           = inForm.get("Gender");
+    const Discount         = inForm.get("Discount");
+    const NewPrice         = inForm.get("NewPrice");
+    const TranslationsJson = inForm.get("TranslationsJson");
+
+    // приводим и собираем query
+    const toNum = (v) => {
+      if (v === null || v === undefined || v === "") return undefined;
+      const n = Number(String(v).replace(/\s/g, ""));
+      return Number.isFinite(n) ? n : undefined;
+    };
+    const normList = (arr) => {
+      const vals = (arr ?? []).filter(Boolean).map(String);
+      if (vals.length > 1) return JSON.stringify(vals);   // ["Red","Yellow"]
+      if (vals.length === 1) return vals[0];              // "Red"
+      return "";
+    };
+
+    const q = new URLSearchParams();
+    const priceNum = toNum(Price);
+    if (priceNum === undefined) return badReq("Price is required/invalid");
+    q.set("Price", String(priceNum));
+
+    const colorVal = normList(ColorAll);
+    if (!colorVal) return badReq("Color is required");
+    q.set("Color", colorVal);
+
+    const sizeVal = normList(SizeAll);
+    if (!sizeVal) return badReq("Size is required");
+    q.set("Size", sizeVal);
+
+    if (!Category) return badReq("Category is required");
+    q.set("Category", String(Category));
+
+    if (Industry) q.set("Industry", String(Industry));
+    q.set("Gender", String(Gender || "none"));
+
+    const discountBool = String(Discount).toLowerCase() === "true";
+    q.set("Discount", String(discountBool));
+    const newPriceNum = toNum(NewPrice);
+    if (discountBool && newPriceNum === undefined) return badReq("NewPrice is required when Discount=true");
+    q.set("NewPrice", String(discountBool ? (newPriceNum ?? 0) : 0));
+
+    if (!TranslationsJson) return badReq("TranslationsJson is required");
+    q.set("TranslationsJson", String(TranslationsJson));
+
+    // тело = только ImageLinks[]
+    const outForm = new FormData();
+    const files = inForm.getAll("ImageLinks") || [];
+    for (const f of files) {
+      if (!f) continue;
+      const buf = Buffer.from(await f.arrayBuffer());
+      outForm.append("ImageLinks", buf, {
+        filename: f.name || "file",
+        contentType: f.type || "application/octet-stream",
+      });
+    }
+
+    // auth: header -> cookie
+    const hdrAuth = req.headers.get("authorization");
+    const cookieToken = cookies().get("token")?.value;
+    const Authorization = hdrAuth || (cookieToken ? `Bearer ${cookieToken}` : undefined);
+
+    const url = `${process.env.BASE_URL}/api/Product?${q.toString()}`;
+    const upstream = await axios.post(url, outForm, {
+      headers: {
+        ...(Authorization ? { Authorization } : {}),
+        ...outForm.getHeaders(),
+        Accept: "*/*",
+      },
+      maxBodyLength: Infinity,
+      validateStatus: () => true,
+    });
+
+    if (upstream.status >= 400) {
+      return new Response(JSON.stringify({ upstreamStatus: upstream.status, upstreamBody: upstream.data }), {
+        status: upstream.status,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    revalidateTag("products");
+    return new Response(JSON.stringify(upstream.data ?? { ok: true }), {
+      status: upstream.status || 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (err) {
+    const status = err?.response?.status || 500;
+    const body = err?.response?.data || err?.message || "Unknown error";
+    return new Response(JSON.stringify({ error: true, message: body }), {
+      status,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
+function badReq(message) {
+  return new Response(JSON.stringify({ error: true, message }), {
+    status: 400,
+    headers: { "Content-Type": "application/json" },
+  });
+}

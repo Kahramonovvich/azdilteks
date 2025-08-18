@@ -23,16 +23,15 @@ export function middleware(req) {
     // }
 
     // ===== 2. Admin защита =====
-    // const cookie = req.cookies.get('admin_token');
-    // let token = '';
-    // if (cookie) {
-    //     const cookieData = JSON?.parse(cookie?.value);
-    //     token = cookieData.token;
-    // };
+    const cookie = req.cookies.get('token');
+    let token = '';
+    if (cookie) {
+        token = cookie?.value;
+    };
 
-    // if ((path === "/ru/admin" || path === "/uz/admin" || path === "/admin" || path.startsWith("/admin/")) && !token) {
-    //     return NextResponse.redirect(new URL("/login", req.url));
-    // }
+    if ((path === "/ru/admin" || path === "/uz/admin" || path === "/admin" || path.startsWith("/admin/")) && !token) {
+        return NextResponse.redirect(new URL("/login", req.url));
+    }
 
     // ===== 3. Локализация =====
     const isPublicFile = PUBLIC_FILE.test(path) || path.startsWith('/api') || path.includes('_next');

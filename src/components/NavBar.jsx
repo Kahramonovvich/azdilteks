@@ -18,8 +18,10 @@ import PhoneIcon from '@/icons/eva_phone-call-fill.svg'
 
 export default function NavBar({ locale }) {
 
-    const router = useRouter();
     const pathname = usePathname();
+    if (pathname?.startsWith(`/${locale}/admin`) || pathname?.startsWith(`/${locale}/login`)) return null;
+
+    const router = useRouter();
     const searchParams = useSearchParams();
     const inputRef = useRef(null);
 
