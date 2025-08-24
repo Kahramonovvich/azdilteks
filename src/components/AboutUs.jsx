@@ -5,10 +5,13 @@ import Image from 'next/image';
 import RightTopWildIcon from '@/icons/right top wide.svg'
 import RightBottomWildIcon from '@/icons/right bottom wide.svg'
 import RedWildIcon from '@/icons/red wide.svg'
+import { useRouter } from 'nextjs-toploader/app'
 
 export default function AboutUs({ margin, locale }) {
-    
+
     const isUz = locale === 'uz';
+
+    const router = useRouter();
 
     return (
         <div className={`aboutUs mt-5 lg:mt-[${margin ? `${margin}px` : '90px'}]`}>
@@ -19,8 +22,8 @@ export default function AboutUs({ margin, locale }) {
                     </h3>
                     <p className="text-[#525252] lg:text-base text-sm">
                         {isUz
-                            ? `Bu yillik tajriba, mukammal jamoa va eng muhimi, halollik va sifatga bo‘lgan sadoqatdir. Kompaniyamiz restoranlar, shifoxonalar, ta’lim muassasalari, qurilish sohalari va boshqa ko‘plab yo‘nalishlar uchun maxsus kiyimlar ishlab chiqarishga ixtisoslashgan.`
-                            : `Это многолетний опыт, слаженная команда и, главное, преданность честности и качеству. Наша компания специализируется на производстве спецодежды для ресторанов, больниц, образовательных учреждений, строительных сфер и многих других направлений.`}
+                            ? `Bu 25 yillik tajriba, mukammal jamoa va eng muhimi — halollik hamda sifatga bo‘lgan sadoqatdir. Kompaniyamiz restoranlar, shifoxonalar, ta’lim muassasalari, qurilish sohalari va boshqa ko‘plab yo‘nalishlar uchun maxsus kiyimlar ishlab chiqarishga ixtisoslashgan.`
+                            : `Это 25-летний опыт, отличная команда, а главное — честность и приверженность качеству. Наша компания специализируется на производстве спецодежды для ресторанов, больниц, учебных заведений, строительной отрасли и многих других сфер.`}
                     </p>
                 </div>
                 <div className="bottom lg:mt-16 mt-2.5 grid grid-cols-12 grid-rows-2 lg:gap-6 gap-3">
@@ -49,7 +52,10 @@ export default function AboutUs({ margin, locale }) {
                                     {isUz ? 'Brending va logotip bilan maxsus tikuv' : 'Индивидуальный пошив с брендингом и логотипом'}
                                 </li>
                             </ul>
-                            <button className="bg-[#171717] text-white rounded-[20px] lg:px-10 lg:py-3 lg:mt-10 relative py-2.5 px-[34px] mt-4">
+                            <button
+                                className="bg-[#171717] text-white rounded-[20px] lg:px-10 lg:py-3 lg:mt-10 relative py-2.5 px-[34px] mt-4"
+                                onClick={() => router.push(`/${locale}/catalog`)}
+                            >
                                 {isUz ? 'Ko’rish' : 'Смотреть'}
                             </button>
                         </div>

@@ -9,10 +9,10 @@ export default function OurServices({ locale }) {
     const info = [
         {
             icon: <RotateIcon />,
-            title: isUz ? 'Bepul qaytish' : 'Бесплатный возврат',
+            title: isUz ? 'Bepul konsultatsiya va o‘lcham olish' : 'Бесплатная консультация и замер',
             subTitle: isUz
-                ? 'Mijozlarimiz xaridlarini oson va muammosiz qaytarish yoki almashtirishlari mumkin.'
-                : 'Наши клиенты могут легко и без проблем вернуть или обменять свои покупки.',
+                ? 'Biz bilan hamkorlik qilishni yanada qulay qiling. Mutaxassislarimiz siz uchun eng to‘g‘ri yechimni tanlab, kerakli o‘lchamlarni joyida aniqlab berishadi.'
+                : 'Сделайте сотрудничество с нами ещё удобнее. Наши специалисты подберут для вас оптимальное решение и определят необходимые размеры на объекте.',
         },
         {
             icon: <SecurityIcon />,

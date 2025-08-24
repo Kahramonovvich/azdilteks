@@ -9,18 +9,16 @@ export async function POST(req) {
   try {
     const inForm = await req.formData();
 
-    // читаем как пришло
-    const Price            = inForm.get("Price");
-    const ColorAll         = inForm.getAll("Color");          // может быть несколько
-    const SizeAll          = inForm.getAll("Size");           // может быть несколько
-    const Category         = inForm.get("Category");
-    const Industry         = inForm.get("Industry");
-    const Gender           = inForm.get("Gender");
-    const Discount         = inForm.get("Discount");
-    const NewPrice         = inForm.get("NewPrice");
+    const Price = inForm.get("Price");
+    const ColorAll = inForm.getAll("Color");
+    const SizeAll = inForm.getAll("Size");
+    const Category = inForm.get("Category");
+    const Industry = inForm.get("Industry");
+    const Gender = inForm.get("Gender");
+    const Discount = inForm.get("Discount");
+    const NewPrice = inForm.get("NewPrice");
     const TranslationsJson = inForm.get("TranslationsJson");
 
-    // приводим и собираем query
     const toNum = (v) => {
       if (v === null || v === undefined || v === "") return undefined;
       const n = Number(String(v).replace(/\s/g, ""));
@@ -28,10 +26,12 @@ export async function POST(req) {
     };
     const normList = (arr) => {
       const vals = (arr ?? []).filter(Boolean).map(String);
-      if (vals.length > 1) return JSON.stringify(vals);   // ["Red","Yellow"]
-      if (vals.length === 1) return vals[0];              // "Red"
+      if (vals.length > 1) return JSON.stringify(vals);
+      if (vals.length === 1) return vals[0];
       return "";
     };
+
+    const outForm = new FormData();
 
     const q = new URLSearchParams();
     const priceNum = toNum(Price);
@@ -61,8 +61,16 @@ export async function POST(req) {
     if (!TranslationsJson) return badReq("TranslationsJson is required");
     q.set("TranslationsJson", String(TranslationsJson));
 
-    // тело = только ImageLinks[]
-    const outForm = new FormData();
+    outForm.append("Price", String(priceNum));
+    outForm.append("Color", colorVal);
+    outForm.append("Size", sizeVal);
+    outForm.append("Category", String(Category));
+    if (Industry) outForm.append("Industry", String(Industry));
+    outForm.append("Gender", String(Gender || "men"));
+    outForm.append("Discount", String(discountBool));
+    outForm.append("NewPrice", String(discountBool ? (newPriceNum ?? 0) : 0));
+    outForm.append("TranslationsJson", String(TranslationsJson));
+
     const files = inForm.getAll("ImageLinks") || [];
     for (const f of files) {
       if (!f) continue;
@@ -73,12 +81,11 @@ export async function POST(req) {
       });
     }
 
-    // auth: header -> cookie
     const hdrAuth = req.headers.get("authorization");
     const cookieToken = cookies().get("token")?.value;
     const Authorization = hdrAuth || (cookieToken ? `Bearer ${cookieToken}` : undefined);
 
-    const url = `${process.env.BASE_URL}/api/Product?${q.toString()}`;
+    const url = `${process.env.BASE_URL}/api/Product`;
     const upstream = await axios.post(url, outForm, {
       headers: {
         ...(Authorization ? { Authorization } : {}),
@@ -97,6 +104,7 @@ export async function POST(req) {
     }
 
     revalidateTag("products");
+
     return new Response(JSON.stringify(upstream.data ?? { ok: true }), {
       status: upstream.status || 200,
       headers: { "Content-Type": "application/json" },
@@ -116,4 +124,4 @@ function badReq(message) {
     status: 400,
     headers: { "Content-Type": "application/json" },
   });
-}
+};

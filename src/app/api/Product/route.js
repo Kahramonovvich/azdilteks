@@ -8,7 +8,6 @@ export async function GET(req) {
         const cookieStore = cookies();
         const token = cookieStore.get("token")?.value;
 
-        // Не шлём пустой Authorization — некоторые бэки на это бесятся
         const headers = { Accept: "application/json" };
         if (token) headers.Authorization = `Bearer ${token}`;
 

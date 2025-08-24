@@ -4,12 +4,15 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import AddProductModal from './AddProductModal';
+import EditProductModal from './EditProductModal';
 
 export default function ProductsTable({ locale }) {
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [openAddModal, setOpenAddModal] = useState(false);
+    const [openEditModal, setOpenEditModal] = useState(false);
+    const [selectedId, setSelectedId] = useState('');
 
     const loadProducts = async () => {
         setLoading(true);
@@ -35,7 +38,8 @@ export default function ProductsTable({ locale }) {
     };
 
     const handleEdit = (p) => {
-        toast.info(`Редактируем продукт: ${p.name}`);
+        setOpenEditModal(true);
+        setSelectedId(p.productId);
     };
 
     const handleDelete = async (id) => {
@@ -48,7 +52,7 @@ export default function ProductsTable({ locale }) {
             loadProducts();
         } catch (err) {
             toast.error(err.message);
-        }
+        };
     };
 
     return (
@@ -58,6 +62,12 @@ export default function ProductsTable({ locale }) {
                 open={openAddModal}
                 onClose={() => setOpenAddModal(false)}
                 onSuccess={loadProducts}
+            />
+            <EditProductModal
+                open={openEditModal}
+                onClose={() => setOpenEditModal(false)}
+                productId={selectedId}
+                 onSuccess={loadProducts}
             />
 
             <div className="flex items-center justify-between">

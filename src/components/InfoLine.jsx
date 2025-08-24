@@ -7,8 +7,8 @@ export default function InfoLine({ margin, locale }) {
             subTitle: isUz ? 'Yillik tajriba' : 'Лет опыта',
         },
         {
-            title: '5000+',
-            subTitle: isUz ? 'Berilgan zakazlar' : 'Выполненных заказов',
+            title: '1.000.000+',
+            subTitle: isUz ? 'Berilgan buyurtmalar' : 'Выполненных заказов',
         },
         {
             title: '24',

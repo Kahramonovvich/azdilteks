@@ -1,5 +1,4 @@
 'use client';
-
 import axios from 'axios';
 import { Menu, LogOut, User, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -19,7 +18,7 @@ export default function Header({ onToggleSidebar }) {
 
     const handleLogout = async () => {
         await axios.post('/api/auth/log-out');
-        router.push('/');
+        router.refresh();
         console.log('logout...');
     };
 

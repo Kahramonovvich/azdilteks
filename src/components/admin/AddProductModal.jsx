@@ -1,5 +1,4 @@
 'use client';
-
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -10,8 +9,9 @@ import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { clothesCategory, colors, industry, sizes } from '@/constants/constants';
+import { X } from 'lucide-react';
 
-const genders = ['men', 'women', 'none'];
+const genders = ['men', 'women'];
 const fmt = (n) => String(n || '').replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 const onlyDigits = (v) => (v ?? '').toString().replace(/\D/g, '');
 const asArray = (v) => Array.isArray(v) ? v : (v == null ? [] : [v]);
@@ -24,15 +24,12 @@ export default function AddProductModal({ open, onClose, onSuccess }) {
     const [loading, setLoading] = useState(false);
 
     const [form, setForm] = useState({
-        // переводы
         nameUz: '', descUz: '',
         nameRu: '', descRu: '',
-        // swagger query
         price: '', newPrice: '', discount: false,
         gender: 'men',
         category: null, industry: null,
         colors: [], sizes: [],
-        // body
         images: [],
     });
 
@@ -52,17 +49,34 @@ export default function AddProductModal({ open, onClose, onSuccess }) {
         setForm((p) => ({ ...p, images: files }));
     };
 
+    const isColorSelected = (slug) => form.colors.some((c) => getSlug(c) === slug);
+    const toggleColor = (col) => {
+        const slug = getSlug(col);
+        setForm((p) => ({
+            ...p,
+            colors: isColorSelected(slug)
+                ? p.colors.filter((c) => getSlug(c) !== slug)
+                : [...p.colors, col],
+        }));
+    };
+
+    const isSizeSelected = (s) => form.sizes.includes(s);
+    const toggleSize = (s) =>
+        setForm((p) => ({
+            ...p,
+            sizes: isSizeSelected(s) ? p.sizes.filter((x) => x !== s) : [...p.sizes, s],
+        }));
+
     const submit = async (e) => {
         e.preventDefault();
 
-        // двухшаговые переводы
         if (lang === 'uz') {
             if (!form.nameUz.trim() || !form.descUz.trim()) return toast.error('UZ maydonlarni to‘ldir');
-            setLang('ru'); return;
+            setLang('ru');
+            return;
         }
         if (!form.nameRu.trim() || !form.descRu.trim()) return toast.error('Заполни RU поля');
 
-        // нормализация
         const price = onlyDigits(form.price);
         const newPrice = onlyDigits(form.newPrice);
         const colorsArr = [...asArray(form.colors)].map(getSlug).filter(Boolean);
@@ -70,7 +84,6 @@ export default function AddProductModal({ open, onClose, onSuccess }) {
         const category = getSlug(form.category);
         const industry = form.industry ? getSlug(form.industry) : '';
 
-        // проверки
         if (!price) return toast.error('Price required');
         if (!category) return toast.error('Category required');
         if (!colorsArr.length) return toast.error('Color required');
@@ -82,36 +95,27 @@ export default function AddProductModal({ open, onClose, onSuccess }) {
             setLoading(true);
 
             const fd = new FormData();
-
-            // — query поля строго по Swagger —
             fd.append('Price', price);
             fd.append('Category', category);
             if (industry) fd.append('Industry', industry);
-            fd.append('Gender', form.gender || 'none');
+            fd.append('Gender', form.gender || 'men');
             fd.append('Discount', String(!!form.discount));
             fd.append('NewPrice', form.discount ? newPrice : '0');
 
-            // Color/Size — можно несколько: повторяем ключ
             colorsArr.forEach((c) => fd.append('Color', c));
             sizesArr.forEach((s) => fd.append('Size', s));
 
-            // TranslationsJson
             fd.append('TranslationsJson', JSON.stringify([
-                { Language: 'uz', Name: form.nameUz.trim(), Description: form.descUz.trim() },
-                { Language: 'ru', Name: form.nameRu.trim(), Description: form.descRu.trim() },
+                { Language: 'uz', Name: form.nameUz.trim(), Description: form.descUz.trim(), ProductName: form.nameUz.trim(), ProductDescription: form.descUz.trim() },
+                { Language: 'ru', Name: form.nameRu.trim(), Description: form.descRu.trim(), ProductName: form.nameRu.trim(), ProductDescription: form.descRu.trim() },
             ]));
 
-            // — body: файлы —
             asArray(form.images).forEach((f) => fd.append('ImageLinks', f));
 
-            // ВАЖНО: не задаём Content-Type — браузер поставит boundary сам
-            const res = await axios.post('/api/Product/create', fd, {
-                transformRequest: [(d) => d],
-            });
-
+            const res = await axios.post('/api/Product/create', fd, { transformRequest: [(d) => d] });
             if (res.status >= 200 && res.status < 300) {
                 toast.success('Mahsulot yaratildi');
-                onSuccess?.(); // обновить список
+                onSuccess?.();
                 reset();
                 onClose?.();
             } else {
@@ -119,6 +123,7 @@ export default function AddProductModal({ open, onClose, onSuccess }) {
             }
         } catch (err) {
             toast.error(err?.response?.data?.message || err?.message || 'Xatolik');
+            console.error(err);
         } finally {
             setLoading(false);
         }
@@ -130,7 +135,6 @@ export default function AddProductModal({ open, onClose, onSuccess }) {
         <Modal open={open} onClose={loading ? undefined : onClose}>
             <div className="absolute left-1/2 top-1/2 w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-xl">
                 <form onSubmit={submit} className="space-y-4">
-                    {/* header */}
                     <div className="flex items-center justify-between">
                         <h2 className="text-lg font-semibold">Yangi mahsulot</h2>
                         <div className="flex items-center gap-2">
@@ -146,20 +150,18 @@ export default function AddProductModal({ open, onClose, onSuccess }) {
                         </div>
                     </div>
 
-                    {/* translations */}
                     {lang === 'uz' ? (
-                        <div className="grid gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <TextField label="Nomi (UZ)" value={form.nameUz} onChange={(e) => setForm((p) => ({ ...p, nameUz: e.target.value }))} fullWidth />
-                            <TextField label="Tavsif (UZ)" value={form.descUz} onChange={(e) => setForm((p) => ({ ...p, descUz: e.target.value }))} fullWidth multiline minRows={2} />
+                            <TextField label="Tavsif (UZ)" value={form.descUz} onChange={(e) => setForm((p) => ({ ...p, descUz: e.target.value }))} fullWidth multiline minRows={1} />
                         </div>
                     ) : (
-                        <div className="grid gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <TextField label="Название (RU)" value={form.nameRu} onChange={(e) => setForm((p) => ({ ...p, nameRu: e.target.value }))} fullWidth />
-                            <TextField label="Описание (RU)" value={form.descRu} onChange={(e) => setForm((p) => ({ ...p, descRu: e.target.value }))} fullWidth multiline minRows={2} />
+                            <TextField label="Описание (RU)" value={form.descRu} onChange={(e) => setForm((p) => ({ ...p, descRu: e.target.value }))} fullWidth multiline minRows={1} />
                         </div>
                     )}
 
-                    {/* swagger params */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <TextField
                             label="Narxi (Price)"
@@ -194,53 +196,75 @@ export default function AddProductModal({ open, onClose, onSuccess }) {
                             getOptionLabel={lbl}
                             isOptionEqualToValue={eq}
                             onChange={(_e, v) => setForm((p) => ({ ...p, industry: v }))}
-                            renderInput={(params) => <TextField {...params} label="Industriya (Industry, ixtiyoriy)" />}
+                            renderInput={(params) => <TextField {...params} label="Industriya (ixtiyoriy)" />}
                         />
 
-                        {/* Color — multiple */}
-                        <Autocomplete
-                            multiple
-                            options={colors}
-                            value={form.colors}
-                            getOptionLabel={lbl}
-                            isOptionEqualToValue={eq}
-                            onChange={(_e, v) => setForm((p) => ({ ...p, colors: v }))}
-                            renderInput={(params) => <TextField {...params} label="Rang(lar) (Color)" />}
-                        />
+                        <div className="col-span-2 grid grid-cols-2 items-center gap-4">
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={form.discount}
+                                        onChange={(e) => setForm((p) => ({ ...p, discount: e.target.checked }))}
+                                    />
+                                }
+                                label="Chegirma"
+                            />
+                            <TextField
+                                label="NewPrice"
+                                type="text"
+                                value={fmt(form.newPrice)}
+                                onChange={(e) => setForm((p) => ({ ...p, newPrice: onlyDigits(e.target.value) }))}
+                                inputProps={{ inputMode: 'numeric' }}
+                                disabled={!form.discount || lang === 'ru'}
+                                required={form.discount}
+                            />
+                        </div>
 
-                        {/* Size — multiple */}
-                        <Autocomplete
-                            multiple
-                            options={sizes}
-                            value={form.sizes}
-                            onChange={(_e, v) => setForm((p) => ({ ...p, sizes: v }))}
-                            renderInput={(params) => <TextField {...params} label="O‘lcham(lar) (Size)" />}
-                        />
+                        <div className="col-span-2">
+                            <div className="mb-2 text-sm text-gray-600">Rang(lar) (Color)</div>
+                            <div className="flex items-center flex-wrap gap-x-2 gap-y-1.5">
+                                {colors.map((col) => {
+                                    const selected = isColorSelected(col.slug);
+                                    return (
+                                        <button
+                                            type="button"
+                                            key={col.slug}
+                                            onClick={() => toggleColor(col)}
+                                            title={col.slug}
+                                            style={{ backgroundColor: col.hex }}
+                                            className={`h-8 w-8 rounded-full border flex items-center justify-center transition ${selected ? 'ring-2 ring-black/70 scale-105' : 'ring-0'
+                                                }`}
+                                        >
+                                            {selected ? <X className={`w-4 h-4 ${col.slug === 'white' ? '' : 'text-white'}`} /> : null}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
 
-                        <FormControlLabel
-                            control={<Checkbox checked={form.discount} onChange={(e) => setForm((p) => ({ ...p, discount: e.target.checked }))} />}
-                            label="Chegirma (Discount)"
-                        />
+                        <div className="col-span-2">
+                            <div className="mb-2 text-sm text-gray-600">O‘lcham(lar) (Size)</div>
+                            <div className="flex items-center flex-wrap gap-1.5">
+                                {sizes.map((s) => (
+                                    <button
+                                        type="button"
+                                        key={s}
+                                        onClick={() => toggleSize(s)}
+                                        className={`px-3 py-1 rounded-xl transition ${isSizeSelected(s) ? 'bg-gray-600 text-white' : 'bg-gray-200 text-gray-800'
+                                            }`}
+                                    >
+                                        {s}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
 
-                        <TextField
-                            label="Yangi narx (NewPrice)"
-                            type="text"
-                            value={fmt(form.newPrice)}
-                            onChange={(e) => setForm((p) => ({ ...p, newPrice: onlyDigits(e.target.value) }))}
-                            inputProps={{ inputMode: 'numeric' }}
-                            disabled={!form.discount || lang === 'ru'}
-                            required={form.discount}
-                            fullWidth
-                        />
-                    </div>
-
-                    {/* images */}
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium">Rasmlar (ImageLinks)</label>
-                        <input type="file" multiple accept="image/*" onChange={onFiles} disabled={lang === 'ru'} />
-                        {!!asArray(form.images).length && (
-                            <p className="text-xs text-gray-500">Tanlandi: {asArray(form.images).length} ta fayl</p>
-                        )}
+                        <div className="col-span-2">
+                            <input type="file" multiple accept="image/*" onChange={onFiles} disabled={lang === 'ru'} />
+                            {!!asArray(form.images).length && (
+                                <p className="text-xs text-gray-500">Tanlandi: {asArray(form.images).length} ta fayl</p>
+                            )}
+                        </div>
                     </div>
 
                     <div className="flex justify-end gap-2 pt-2">

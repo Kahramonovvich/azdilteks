@@ -7,15 +7,15 @@ export default function Header({ locale }) {
 
     const infoBox = [
         {
-            count: '80+',
+            count: '200+',
             title: locale === 'uz' ? 'Restoran' : 'Ресторанов'
         },
         {
-            count: '40+',
+            count: '50+',
             title: locale === 'uz' ? 'Ta’lim markazlari' : 'Образовательных центров'
         },
         {
-            count: '60+',
+            count: '1000+',
             title: locale === 'uz' ? 'Qurilish firmalari' : 'Строительных компаний'
         },
     ];
