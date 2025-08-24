@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import AddProductModal from './AddProductModal';
 import EditProductModal from './EditProductModal';
+import Image from 'next/image';
 
 export default function ProductsTable({ locale }) {
 
@@ -67,7 +68,7 @@ export default function ProductsTable({ locale }) {
                 open={openEditModal}
                 onClose={() => setOpenEditModal(false)}
                 productId={selectedId}
-                 onSuccess={loadProducts}
+                onSuccess={loadProducts}
             />
 
             <div className="flex items-center justify-between">
@@ -112,11 +113,14 @@ export default function ProductsTable({ locale }) {
                                     <td className="px-4 py-2">{p.productId}</td>
                                     <td className="px-4 py-2">
                                         {p.imageLink ? (
-                                            <img
-                                                src={p.imageLink}
-                                                alt={p.name}
-                                                className="h-12 w-12 rounded object-cover"
-                                            />
+                                            <div className="relative h-12 w-12">
+                                                <Image
+                                                    src={p.imageLink}
+                                                    alt={p.name}
+                                                    style={{ objectFit: 'cover', borderRadius: '4px' }}
+                                                    fill
+                                                />
+                                            </div>
                                         ) : (
                                             <span className="text-gray-400">нет</span>
                                         )}
