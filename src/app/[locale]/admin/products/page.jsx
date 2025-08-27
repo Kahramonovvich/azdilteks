@@ -9,4 +9,4 @@ export default async function ProductsPage({ params }) {
             <ProductsTable locale={locale} />
         </div>
     );
-}
+};

@@ -5,10 +5,16 @@ import CloseIcon from '@/icons/x 1.svg'
 import { useMask } from "@react-input/mask";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import { cleanDateToISO, cleanPhone } from "@/utils/utils";
+import axios from "axios";
 
-export default function OrderModal() {
+export default function OrderModal({ totalPrice }) {
 
-    const { orderModal, setOrderModal, setCart } = useGlobalContext();
+    const { orderModal, setOrderModal, setCart, cart } = useGlobalContext();
+
+    if (!orderModal) {
+        return null;
+    };
 
     const inputPhoneRef = useMask({
         mask: '+998 (__) ___-__-__',
@@ -24,10 +30,16 @@ export default function OrderModal() {
     const [name, setName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('+998 (__) ___-__-__');
     const [birthDate, setBirthDate] = useState('dd.mm.yyyy');
+    const [isLoading, setIsloading] = useState(false);
 
-    const handleClose = () => setOrderModal(false);
+    const handleClose = () => {
+        if (isLoading) {
+            return;
+        };
+        setOrderModal(false);
+    };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const date = inputDateRef.current?.value;
@@ -42,15 +54,51 @@ export default function OrderModal() {
             return;
         };
 
-        setOrderModal(false);
-        setCart([]);
-        toast.success("Buyurtma muvofaqqiyatli jo`natildi!");
+        setIsloading(true);
+
+        const ord = cart
+            .filter(o => o.isChecked)
+            .map(o => ({
+                productId: o.id,
+                size: o.selectedOptions.size,
+                color: o.selectedOptions.color,
+                quantity: o.quantity,
+            }));
+
+        const sendedOrders = {
+            user: {
+                name: name,
+                birthDate: cleanDateToISO(birthDate),
+                phoneNumber: cleanPhone(phoneNumber)
+            },
+            orders: ord,
+            totalPrice: totalPrice
+        };
+
+        try {
+            const res = await axios.post('/api/Cart/create', sendedOrders, {
+                headers: { 'Content-Type': 'application/json' },
+                validateStatus: () => true,
+            });
+
+            if (res.status >= 200 && res.status < 300) {
+                setOrderModal(false);
+                setCart([]);
+                toast.success("Buyurtma muvofaqqiyatli jo`natildi!");
+            } else {
+                toast.error('Buyurtma berishda xatolik.')
+            };
+        } catch (error) {
+            console.error(error);
+            toast.error('Buyurtma berishda xatolik.')
+        } finally {
+            setIsloading(false);
+        };
     };
 
     return (
         <Modal
             open={orderModal}
-            onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
             className="px-4 lg:p-0"
@@ -130,15 +178,16 @@ export default function OrderModal() {
                             <button
                                 className="rounded-3xl p-4 bg-primary-orange text-white font-medium"
                                 type='submit'
+                                disabled={isLoading}
                             >
-                                Jo’natish
+                                {isLoading ? "Jo'natilmoqda" : "Jo’natish"}
                             </button>
                             <button
                                 className="rounded-3xl p-4 border border-primary-orange text-primary-orange font-medium"
                                 type="button"
                                 onClick={handleClose}
                             >
-                                Buyurtmalarga o’tish
+                                Bekor qilish
                             </button>
                         </div>
                     </form>

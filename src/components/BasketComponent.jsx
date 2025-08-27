@@ -9,6 +9,7 @@ import MinusIcon from '@/icons/minus.svg'
 import AddIcon from '@/icons/add.svg'
 import DeleteIcon from '@/icons/trash.svg'
 import { toast } from 'react-toastify';
+import OrderModal from './OrderModal';
 
 export default function BasketComponent({ products, locale }) {
     const isUz = locale === 'uz';
@@ -53,6 +54,7 @@ export default function BasketComponent({ products, locale }) {
 
     return (
         <div className="basketComponent lg:mt-10 mt-5">
+            <OrderModal totalPrice={calculateTotalPrice(productsOnBasket)} />
             <div className="lg:flex gap-x-[52px] hidden">
                 <div className="left flex-1">
                     <div className="top border-b py-7">

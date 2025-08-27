@@ -1,7 +1,6 @@
 import Link from "next/link";
 import LinkArrowIcon from '@/icons/Arrow next page.svg'
 import BasketComponent from "@/components/BasketComponent";
-import OrderModal from "@/components/OrderModal";
 import { products } from "../../../../products";
 
 export default async function BasketPage({ params }) {
@@ -11,7 +10,6 @@ export default async function BasketPage({ params }) {
 
     return (
         <div className="basketPage">
-            <OrderModal />
             <div className="container">
                 <div className="top flex items-center lg:gap-x-2 lg:mt-[46px]">
                     <Link

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req) {
     try {
-        const body = await req.json(); // { userName, password }
+        const body = await req.json(); 
 
         const upstream = await fetch(`${process.env.BASE_URL}/api/auth/login`, {
             method: 'POST',
@@ -37,7 +37,7 @@ export async function POST(req) {
             secure: true,
             sameSite: 'lax',
             path: '/',
-            maxAge: 60 * 60 * 24 * 7, // 7 дней
+            maxAge: 60 * 60 * 24,
         });
 
         return res;
@@ -46,5 +46,5 @@ export async function POST(req) {
             { error: true, message: err?.message || 'Unknown error' },
             { status: 500 }
         );
-    }
-}
+    };
+};

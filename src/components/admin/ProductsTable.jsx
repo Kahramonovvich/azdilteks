@@ -115,9 +115,10 @@ export default function ProductsTable({ locale }) {
                                         {p.imageLink ? (
                                             <div className="relative h-12 w-12">
                                                 <Image
-                                                    src={p.imageLink}
+                                                    src={`/api/img?src=${encodeURIComponent(p.imageLink)}`}
                                                     alt={p.name}
                                                     style={{ objectFit: 'cover', borderRadius: '4px' }}
+                                                    loading='lazy'
                                                     fill
                                                 />
                                             </div>
@@ -150,4 +151,4 @@ export default function ProductsTable({ locale }) {
             </div>
         </div>
     );
-}
+};
