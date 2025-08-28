@@ -18,7 +18,7 @@ export default function Header({ onToggleSidebar }) {
 
     const handleLogout = async () => {
         await axios.post('/api/auth/log-out');
-        router.refresh();
+        router.push('/login');
         console.log('logout...');
     };
 
