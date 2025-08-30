@@ -1,12 +1,25 @@
 import Link from "next/link";
 import LinkArrowIcon from '@/icons/Arrow next page.svg'
 import BasketComponent from "@/components/BasketComponent";
-import { products } from "../../../../products";
 
 export default async function BasketPage({ params }) {
 
     const { locale } = await params;
-    const productsOnBasket = products;
+
+    let products = [];
+    try {
+        const res = await fetch(
+            `${process.env.BASE_URL}/api/Product?language=${locale}`,
+            {
+                headers: { Accept: 'application/json' },
+                next: { revalidate: 600, tags: ['products'] },
+            }
+        );
+        if (!res.ok) throw new Error('Failed');
+        products = await res.json();
+    } catch (e) {
+        console.error(e);
+    };
 
     return (
         <div className="basketPage">
@@ -27,7 +40,7 @@ export default async function BasketPage({ params }) {
                     {locale === 'uz' ? 'Savatcham' : 'Моя корзина'}
                 </h2>
                 <BasketComponent
-                    products={productsOnBasket}
+                    products={products}
                     locale={locale}
                 />
             </div>

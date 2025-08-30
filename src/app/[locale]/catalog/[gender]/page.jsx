@@ -3,13 +3,24 @@ import LinkArrowIcon from '@/icons/Arrow next page.svg'
 import CatalogComponent from "@/components/CatalogComponent";
 import { clothesCategory } from "@/constants/constants";
 import CallMe from "@/components/CallMe";
-import { products } from "../../../../../products";
 
 export default async function GenderPage({ params, searchParams }) {
 
-
     const { gender, locale } = await params;
     const { type, priceFrom, priceTo, page } = await searchParams;
+
+    let products = [];
+
+    try {
+        const res = await fetch(`${process.env.BASE_URL}/api/Product?language=${locale}`, {
+            headers: { Accept: 'application/json' },
+            next: { revalidate: 600, tags: ['products'] },
+        });
+        if (!res.ok) throw new Error('Failed');
+        products = await res.json();
+    } catch (e) {
+        console.error(e);
+    };
 
     const isUz = locale === 'uz';
 
@@ -22,10 +33,10 @@ export default async function GenderPage({ params, searchParams }) {
 
     if (gender) {
         filteredProducts = filteredProducts.filter((product) => {
-            return product.sex === gender;
+            return product.gender === gender;
         });
         typedProducts = typedProducts.filter((product) => {
-            return product.sex === gender;
+            return product.gender === gender;
         });
     };
 
@@ -68,7 +79,7 @@ export default async function GenderPage({ params, searchParams }) {
                         className="font-medium text-[#A3A3A3] lg:text-base text-xs truncate text-nowrap"
                     >
                         {gender === 'men' ? locale === 'uz' ? 'Erkaklar uchun' : 'Для мужчин' :
-                            gender === 'woman' ? locale === 'uz' ? 'Ayollar uchun' : 'Для женщин' : ''}
+                            gender === 'women' ? locale === 'uz' ? 'Ayollar uchun' : 'Для женщин' : ''}
                     </Link>
                     <LinkArrowIcon />
                     <p className="font-medium lg:text-base text-xs truncate text-nowrap">

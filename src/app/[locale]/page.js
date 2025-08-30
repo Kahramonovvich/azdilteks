@@ -6,19 +6,33 @@ import InfoLine from "@/components/InfoLine";
 import Comments from "@/components/Comments";
 import OurServices from "@/components/OurServices";
 import CallMe from "@/components/CallMe";
-import { products } from "../../../products";
 
 export default async function HomePage({ params, searchParams }) {
 
   const { locale } = await params;
   const { gender, industry } = await searchParams;
 
+
+  let products = [];
+
+  try {
+    const res = await fetch(`${process.env.BASE_URL}/api/Product?language=${locale}`, {
+      headers: { Accept: 'application/json' },
+      next: { revalidate: 600, tags: ['products'] },
+    });
+    if (!res.ok) throw new Error('Failed');
+    products = await res.json();
+  } catch (e) {
+    console.error(e);
+  };
+
   let selectedProducts = [];
+  
   if (gender) {
-    selectedProducts = products.filter((item) => item.sex === gender);
+    selectedProducts = products?.filter((item) => item.gender === gender);
   };
   if (!gender) {
-    selectedProducts = products.filter((item) => item.sex === 'men');
+    selectedProducts = products?.filter((item) => item.gender === 'men');
   };
   if (industry) {
     selectedProducts = selectedProducts.filter((item) => item.industry === industry);

@@ -122,7 +122,7 @@ export default function NavBar({ locale }) {
                                         </Link>
                                         <Link
                                             className="block px-5 py-3 font-medium hover:bg-slate-100"
-                                            href={`/${locale}/catalog/woman`}
+                                            href={`/${locale}/catalog/women`}
                                         >
                                             {locale === 'uz' ? 'Ayollar uchun' : 'Для женщин'}
                                         </Link>

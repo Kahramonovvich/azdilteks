@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import OrderModal from './OrderModal';
 
 export default function BasketComponent({ products, locale }) {
+
     const isUz = locale === 'uz';
 
     const {
@@ -34,7 +35,7 @@ export default function BasketComponent({ products, locale }) {
     if (!mounted) return null;
 
     const productsOnBasket = cart.map(cartItem => {
-        const product = products.find(p => Number(p.id) === Number(cartItem.id));
+        const product = products.find(p => Number(p.productId) === Number(cartItem.id));
         return product ? { ...product, ...cartItem } : null;
     }).filter(Boolean);
 
@@ -90,9 +91,9 @@ export default function BasketComponent({ products, locale }) {
                                         <div className="img relative aspect-[0.89] max-w-32 w-full overflow-hidden rounded-2xl">
                                             <Image
                                                 fill
-                                                src={item.image}
+                                                src={`/api/img?src=${encodeURIComponent(item.imageLink)}`}
                                                 style={{ objectFit: 'contain' }}
-                                                alt={item.name}
+                                                alt={item.name || 'rasm'}
                                             />
                                         </div>
                                         <div className="box flex-1 max-w-[228px]">
@@ -217,8 +218,8 @@ export default function BasketComponent({ products, locale }) {
                             <div className="relative w-24 aspect-[0.89] rounded-xl overflow-hidden">
                                 <Image
                                     fill
-                                    src={item.image}
-                                    alt={item.name}
+                                    src={`/api/img?src=${encodeURIComponent(item.imageLink)}`}
+                                    alt={item.name || 'rasm'}
                                     style={{ objectFit: 'contain' }}
                                 />
                             </div>

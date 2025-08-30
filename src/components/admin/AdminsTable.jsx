@@ -4,14 +4,16 @@ import { useEffect, useState } from 'react';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import AddAdminModal from './AddAdminModal';
+import UpdateAdminModal from './UpdateAdminModal';
 
 export default function AdminsTable() {
 
     const [admins, setAdmins] = useState([]);
     const [loading, setLoading] = useState(false);
     const [openAdd, setOpenAdd] = useState(false);
+    const [openUpdateAdmin, setOpenUpdateAdmin] = useState(false);
+    const [selectedAdmin, setSelectedAdmin] = useState(null);
 
-    // загрузка админов
     const loadAdmins = async () => {
         setLoading(true);
         try {
@@ -36,7 +38,8 @@ export default function AdminsTable() {
     };
 
     const handleEdit = (admin) => {
-        toast.info(`Редактировать: ${admin.fullName}`);
+        setSelectedAdmin(admin);
+        setOpenUpdateAdmin(true);
     };
 
     const handleDelete = async (adminId) => {
@@ -53,12 +56,21 @@ export default function AdminsTable() {
     };
 
     return (
-        <div className="space-y-4">
-
+        <div className='space-y-4'>
             <AddAdminModal
                 open={openAdd}
                 onClose={() => setOpenAdd(false)}
                 onSuccess={loadAdmins}
+            />
+
+            <UpdateAdminModal
+                open={openUpdateAdmin}
+                onClose={() => {
+                    setOpenUpdateAdmin(false);
+                    setSelectedAdmin(null)
+                }}
+                onSuccess={loadAdmins}
+                admin={selectedAdmin}
             />
 
             {/* Заголовок и кнопка добавить */}

@@ -84,7 +84,7 @@ export async function GET(req, { params }) {
                 { error: true, message: `Backend error: ${res.status}` },
                 { status: res.status }
             );
-        }
+        };
 
         const data = await res.json();
         return Response.json(data, { status: 200 });

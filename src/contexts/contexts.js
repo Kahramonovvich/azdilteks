@@ -10,7 +10,7 @@ export function GlobalProvider({ children }) {
     const [callBackModal, setCallBackModal] = useState(false);
     const [openFilter, setOpenFilter] = useState(false);
     const [openDetails, setOpenDetails] = useState(false);
-    const [selectedId, setSelectedId] = useState('');
+    const [selectedId, setSelectedId] = useState(null);
     const [cart, setCart] = useState(() => {
         if (typeof window !== 'undefined') {
             const stored = localStorage.getItem('cart');

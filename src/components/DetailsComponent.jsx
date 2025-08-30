@@ -5,32 +5,51 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CloseIcon from '@/icons/close.svg'
 import Image from "next/image";
-import { products } from "../../products";
 import { colors } from "@/constants/constants";
+import { normalizeColors, normalizeSizes } from "@/utils/utils";
 
-export default function DetailsComponent() {
+export default function DetailsComponent({ locale }) {
 
-    const { openDetails, setOpenDetails, addToCart, selectedId } = useGlobalContext();
+    const { openDetails, setOpenDetails, addToCart, selectedId, setSelectedId } = useGlobalContext();
 
-    const product = products.find((item) => Number(item.id) === Number(selectedId));
-
-    const productColors = colors.filter((item) => {
-        return product?.colors.find((color) => item.slug === color);
-    });
-
+    const [product, setProduct] = useState({});
     const [selectedColor, setSelectedColor] = useState('');
     const [selectedSize, setSelectedSize] = useState('');
+    const [selectedIndex, setSelectedIndex] = useState(0);
+
+    useEffect(() => {
+
+        if (!selectedId) { setProduct({}); return; }
+
+        const loadProduct = async () => {
+            try {
+                const res = await fetch(`/api/Product/${selectedId}?language=${locale}`);
+                if (res.ok) {
+                    const prd = await res.json();
+                    setProduct(prd);
+                };
+            } catch (e) {
+                console.error(e);
+            };
+        };
+
+        loadProduct();
+    }, [selectedId]);
+
+    const productColors = colors.filter((item) => {
+        return normalizeColors(product.color).find((color) => item.slug === color);
+    });
 
     const handleAdd = (id, size, color) => {
 
         if (!size) {
             toast.info('Iltimos, o`lchamni tanlang!');
-            return
+            return;
         };
 
         if (!color) {
             toast.info('Iltimos, rang tanlang!');
-            return
+            return;
         };
 
         const added = addToCart(id, { size, color });
@@ -46,7 +65,11 @@ export default function DetailsComponent() {
         setOpenDetails(false);
         setSelectedColor('');
         setSelectedSize('');
+        setSelectedId(null);
+        setProduct({});
     };
+
+    if (!openDetails || !selectedId) return null;
 
     return (
         <Modal
@@ -72,51 +95,35 @@ export default function DetailsComponent() {
                     <div className="bottom mt-6">
                         <div className="flex lg:flex-row flex-col lg:gap-x-[67px]">
                             <div className="left flex-1 max-w-[479px] flex gap-x-3">
-                                <div className="box flex flex-col gap-y-3">
-                                    <div className="img aspect-square w-14 bg-[#F5F5F5] rounded-md relative">
-                                        <Image
-                                            fill
-                                            src={product?.image}
-                                            alt={product?.name}
-                                            style={{ objectFit: 'contain' }}
-                                        />
+                                {product?.imageLinks?.length >= 2 && (
+                                    <div className="box flex flex-col gap-y-3">
+                                        {product?.imageLinks?.map((img, index) => (
+                                            <div
+                                                key={index}
+                                                className="img aspect-square w-14 bg-[#F5F5F5] rounded-md relative cursor-pointer"
+                                                onClick={() => setSelectedIndex(index)}
+                                            >
+                                                <Image
+                                                    fill
+                                                    src={`/api/img?src=${encodeURIComponent(img)}`}
+                                                    alt={product?.name}
+                                                    style={{ objectFit: 'contain' }}
+                                                />
+                                            </div>
+                                        ))}
                                     </div>
-                                    <div className="img aspect-square w-14 bg-[#F5F5F5] rounded-md relative">
-                                        <Image
-                                            fill
-                                            src={product?.image}
-                                            alt={product?.name}
-                                            style={{ objectFit: 'contain' }}
-                                        />
-                                    </div>
-                                    <div className="img aspect-square w-14 bg-[#F5F5F5] rounded-md relative">
-                                        <Image
-                                            fill
-                                            src={product?.image}
-                                            alt={product?.name}
-                                            style={{ objectFit: 'contain' }}
-                                        />
-                                    </div>
-                                    <div className="img aspect-square w-14 bg-[#F5F5F5] rounded-md relative">
-                                        <Image
-                                            fill
-                                            src={product?.image}
-                                            alt={product?.name}
-                                            style={{ objectFit: 'contain' }}
-                                        />
-                                    </div>
-                                </div>
+                                )}
                                 <div className="flex-1 bg-[#F6F6F6] border relative rounded-[15px]">
                                     <Image
                                         fill
-                                        src={product?.image}
-                                        alt={product?.name}
+                                        src={`/api/img?src=${encodeURIComponent(product?.imageLinks?.[selectedIndex])}`}
+                                        alt={product?.name || 'rasm'}
                                         style={{ objectFit: 'contain' }}
                                     />
                                 </div>
                             </div>
                             <div className="right">
-                                <p className="lg:text-[32px] lg:leading-10 lg:mb-[70px] text-2xl my-3 lg:mt-0">
+                                <p className="lg:text-[32px] lg:leading-10 lg:mb-10 text-2xl my-3 lg:mt-0">
                                     {product?.name}
                                 </p>
                                 <div className="size">
@@ -124,12 +131,12 @@ export default function DetailsComponent() {
                                         O’lchamni tanlash
                                     </p>
                                     <div className="box flex lg:gap-x-4 gap-x-2">
-                                        {product?.sizes.map((item, index) => (
+                                        {product?.size && normalizeSizes(product?.size).map((item) => (
                                             <button
-                                                key={index}
+                                                key={item}
                                                 className={`box border rounded-full lg:w-10 lg:h-10 w-8 h-8 flex items-center justify-center
-                                                lg:text-lg lg:leading-[26px] uppercase text-sm
-                                                ${selectedSize === item ? 'border-black text-white bg-black' : ''}`}
+                                                    lg:text-lg lg:leading-[26px] uppercase text-sm
+                                                        ${selectedSize === item ? 'border-black text-white bg-black' : ''}`}
                                                 onClick={() => setSelectedSize(item)}
                                             >
                                                 {item}
@@ -137,23 +144,23 @@ export default function DetailsComponent() {
                                         ))}
                                     </div>
                                 </div>
-                                <div className="color">
+                                <div className="color mt-5">
                                     <p className="text-lg leading-[26px] lg:mb-4 mb-2">
                                         Ranglar
                                     </p>
-                                    <div className="box flex lg:gap-x-4 gap-x-2">
+                                    <div className="box flex gap-2">
                                         {productColors?.map((item, index) => (
                                             <div
                                                 key={index}
                                                 className={`box rounded-full lg:w-10 w-8 lg:h-10 h-8 flex items-center justify-center text-lg leading-[26px]
-                                                uppercase cursor-pointer p-1 border-opacity-0 border border-black
-                                                ${selectedColor === item.slug ? 'border-opacity-100' : ''}`}
+                                                    uppercase cursor-pointer p-1 border-opacity-0 border border-black
+                                                        ${selectedColor === item.slug ? 'border-opacity-100' : ''}`}
                                                 onClick={() => setSelectedColor(item.slug)}
                                             >
                                                 <div
                                                     style={{ background: item.hex }}
                                                     className={`w-full h-full rounded-full
-                                            ${item.slug === 'white' ? 'border' : ''}`}
+                                                        ${item.slug === 'white' ? 'border' : ''}`}
                                                 ></div>
                                             </div>
                                         ))}
@@ -163,7 +170,7 @@ export default function DetailsComponent() {
                         </div>
                         <button
                             className="bg-primary-orange font-medium mt-7 w-full p-4 rounded-3xl text-white"
-                            onClick={() => handleAdd(product.id, selectedSize, selectedColor)}
+                            onClick={() => handleAdd(product.productId, selectedSize, selectedColor)}
                         >
                             Tanlash
                         </button>

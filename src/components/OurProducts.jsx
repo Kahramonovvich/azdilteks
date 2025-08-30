@@ -9,6 +9,7 @@ import { useGlobalContext } from '@/contexts/contexts';
 import Link from 'next/link';
 
 export default function OurProducts({ selectedIndustry, selectedSex, selectedProducts, locale }) {
+
     const router = useRouter();
     const { setOpenDetails, setSelectedId } = useGlobalContext();
 
@@ -66,9 +67,9 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                                 <button
                                     className='hover:bg-slate-200 text-left lg:px-5 lg:py-3 p-3 w-full font-medium lg:text-base text-sm text-nowrap'
                                     onClick={() => {
-                                        setSex('woman');
+                                        setSex('women');
                                         setDropDown(false);
-                                        router.push(`/${locale}/?gender=woman${activeIndustry !== 'all' ? `&industry=${activeIndustry}` : ''}`);
+                                        router.push(`/${locale}/?gender=women${activeIndustry !== 'all' ? `&industry=${activeIndustry}` : ''}`);
                                     }}
                                 >
                                     {texts.women}
@@ -100,19 +101,22 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                     </div>
                 </div>
                 <div className="bottom mt-6 grid lg:grid-cols-3 lg:gap-x-6 gap-x-1.5 grid-cols-2">
-                    {selectedProducts.slice(0, 3).map((item, index) => (
-                        <div className="box last-of-type:hidden lg:last-of-type:block" key={index}>
+                    {selectedProducts.slice(0, 3).map((item) => (
+                        <div
+                            className="box last-of-type:hidden lg:last-of-type:block"
+                            key={item.productId}
+                        >
                             <div className="img relative aspect-[0.842] border rounded-[32px] bg-[#F6F6F6] overflow-hidden">
                                 <Image
                                     fill
                                     alt={item.name}
-                                    src={item.image}
-                                    style={{ objectFit: 'contain' }}
+                                    src={`/api/img?src=${encodeURIComponent(item.imageLink)}`}
+                                    style={{ objectFit: 'cover' }}
                                 />
                             </div>
                             <div className="bottom lg:mt-[15px] mt-1.5">
                                 <Link
-                                    href={`${locale}/catalog/product/${item.id}`}
+                                    href={`${locale}/catalog/product/${item.productId}`}
                                     className='name font-medium lg:text-2xl mb-1 text-nowrap truncate block'
                                 >
                                     {item.name}
@@ -123,8 +127,8 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                                 <button
                                     className='text-white bg-primary-orange rounded-[32px] lg:px-6 lg:py-3 px-2.5 py-1.5 lg:mt-[27px] mt-1.5 font-medium lg:text-base text-xs'
                                     onClick={() => {
+                                        setSelectedId(item.productId);
                                         setOpenDetails(true);
-                                        setSelectedId(item.id);
                                     }}
                                 >
                                     {texts.addToCart}

@@ -14,7 +14,7 @@ export default function RandomProducts({ products, id, locale }) {
     const [randomProducts, setRandomProducts] = useState([]);
 
     useEffect(() => {
-        const filtered = products.filter((p) => p.id !== id);
+        const filtered = products.filter((p) => p.productId !== id);
         const shuffled = filtered.sort(() => 0.5 - Math.random());
         setRandomProducts(shuffled.slice(0, 4));
     }, [products, id]);
@@ -30,20 +30,20 @@ export default function RandomProducts({ products, id, locale }) {
                 <div className={`flex-1 grid lg:gap-x-6 gap-x-3 gap-y-4 lg:gap-y-8 lg:grid-cols-4 grid-cols-2`}>
                     {randomProducts?.slice(0, 4).map((item) => (
                         <div
-                            key={item.id}
+                            key={item.productId}
                             className="box"
                         >
                             <div className="img relative bg-[#F6F6F6] border rounded-[22px] aspect-[0.93] overflow-hidden">
                                 <Image
                                     fill
-                                    src={item.image}
+                                    src={`/api/img?src=${encodeURIComponent(item?.imageLink)}`}
                                     alt={item.name}
-                                    style={{ objectFit: 'contain' }}
+                                    style={{ objectFit: 'cover' }}
                                 />
                             </div>
                             <div className="text mt-2.5">
                                 <Link
-                                    href={`/${locale}/catalog/product/${item.id}`}
+                                    href={`/${locale}/catalog/product/${item.productId}`}
                                     className='font-medium truncate lg:text-[22px] lg:leading-[25px] block'
                                 >
                                     {item.name}
@@ -56,7 +56,7 @@ export default function RandomProducts({ products, id, locale }) {
                                 className='font-medium lg:text-lg lg:leading-[21px] bg-primary-orange lg:px-4 lg:py-2 w-full lg:w-auto p-2 text-sm mt-2.5 text-white rounded-[20px]'
                                 onClick={() => {
                                     setOpenDetails(true);
-                                    setSelectedId(item.id);
+                                    setSelectedId(item.productId);
                                 }}
                             >
                                 {isUz ? "Savatga qo‘shish +" : "Добавить в корзину +"}

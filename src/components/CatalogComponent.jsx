@@ -90,18 +90,18 @@ export default function CatalogComponent({
                         ${openFilter ? 'lg:grid-cols-3 grid-cols-2' : 'lg:grid-cols-4 grid-cols-2'}`}
                     >
                         {currentPageProducts?.map((item) => (
-                            <div key={item.id} className="box overflow-hidden">
+                            <div key={item.productId} className="box overflow-hidden">
                                 <div className="img relative bg-[#F6F6F6] border rounded-[22px] aspect-[0.93] overflow-hidden">
                                     <Image
                                         fill
-                                        src={item.image}
+                                        src={`/api/img?src=${encodeURIComponent(item?.imageLink)}`}
                                         alt={item.name}
-                                        style={{ objectFit: 'contain' }}
+                                        style={{ objectFit: 'cover' }}
                                     />
                                 </div>
                                 <div className="text mt-2.5">
                                     <Link
-                                        href={`/${locale}/catalog/product/${item.id}`}
+                                        href={`/${locale}/catalog/product/${item.productId}`}
                                         className='font-medium truncate lg:text-[22px] lg:leading-[25px] block'
                                     >
                                         {item.name}
@@ -114,7 +114,7 @@ export default function CatalogComponent({
                                     className='font-medium lg:text-lg lg:leading-[21px] text-sm bg-primary-orange lg:px-4 lg:py-2 w-full p-2 lg:w-auto mt-2.5 text-white rounded-[20px]'
                                     onClick={() => {
                                         setOpenDetails(true);
-                                        setSelectedId(item.id);
+                                        setSelectedId(item.productId);
                                     }}
                                 >
                                     {isUz ? "Savatga qo’shish +" : "Добавить в корзину +"}

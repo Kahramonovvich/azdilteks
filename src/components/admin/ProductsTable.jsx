@@ -84,6 +84,14 @@ export default function ProductsTable({ locale }) {
 
             <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
                 <table className="min-w-full text-sm text-left">
+                    <colgroup>
+                        <col className="w-[1%]" />
+                        <col className="w-[1%]" />
+                        <col className="w-[1%]" />
+                        <col className="w-[1%]" />
+                        <col />
+                        <col className="w-[1%]" />
+                    </colgroup>
                     <thead className="bg-gray-100 text-gray-700">
                         <tr>
                             <th className="px-4 py-2">ID</th>
@@ -110,8 +118,8 @@ export default function ProductsTable({ locale }) {
                         ) : (
                             products.map((p) => (
                                 <tr key={p.productId} className="border-t hover:bg-gray-50">
-                                    <td className="px-4 py-2">{p.productId}</td>
-                                    <td className="px-4 py-2">
+                                    <td className="px-4 py-2 whitespace-nowrap">{p.productId}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap">
                                         {p.imageLink ? (
                                             <div className="relative h-12 w-12">
                                                 <Image
@@ -126,10 +134,17 @@ export default function ProductsTable({ locale }) {
                                             <span className="text-gray-400">нет</span>
                                         )}
                                     </td>
-                                    <td className="px-4 py-2">{p.name}</td>
-                                    <td className="px-4 py-2">{p.price.toLocaleString()} so‘m</td>
-                                    <td className="px-4 py-2">{p.description}</td>
-                                    <td className="px-4 py-2 text-right space-x-2">
+                                    <td className="px-4 py-2 whitespace-nowrap">{p.name}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap">{p.price.toLocaleString()} so‘m</td>
+                                    <td className="px-4 py-2">
+                                        <div
+                                            className="line-clamp-2 break-words"
+                                            title={p.description}
+                                        >
+                                            {p.description}
+                                        </div>
+                                    </td>
+                                    <td className="px-4 py-2 text-right space-x-2 whitespace-nowrap">
                                         <button
                                             onClick={() => handleEdit(p)}
                                             className="inline-flex items-center gap-1 rounded-md border px-3 py-1 text-sm hover:bg-gray-100"

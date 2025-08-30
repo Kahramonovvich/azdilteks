@@ -1,13 +1,17 @@
 'use client';
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-export default function AddAdminModal({ open, onClose, onSuccess }) {
+export default function UpdateAdminModal({ open, onClose, onSuccess, admin }) {
+
+    if (!admin) return null;
+
     const [form, setForm] = useState({
-        fullName: '',
         userName: '',
+        oldUserName: '',
         password: '',
-        phoneNumber: '',
+        oldPassword: '',
     });
     const [loading, setLoading] = useState(false);
 
@@ -18,66 +22,76 @@ export default function AddAdminModal({ open, onClose, onSuccess }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         setLoading(true);
 
+        const body = {
+            oldUserName: form.oldUserName,
+            oldPassword: form.oldPassword,
+            newUserName: form.userName,
+            newPassword: form.password,
+        };
+
         try {
-            const res = await fetch('/api/Admin/create-admin', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
-            });
-            const data = await res.json();
+            const res = await axios.put('/api/Admin/updateAdmin', body);
 
-            if (!res.ok || data.error) {
-                throw new Error(data?.message || 'Ошибка при создании');
+            if (res.status >= 200 && res.status < 300) {
+                toast.success('Admin o`zgartitildi.');
+                onSuccess?.();
+                onClose();
             };
-
-            toast.success('Админ успешно добавлен');
-            onSuccess?.();
-            onClose();
         } catch (err) {
-            toast.error(err.message);
+            console.error(err);
+            toast.error("Xatolik:", err.status);
         } finally {
             setLoading(false);
-        }
+        };
     };
+
+    useEffect(() => {
+        setForm((prev) => ({
+            ...prev,
+            oldUserName: admin?.userName ?? '',
+        }));
+    }, [admin, open]);
 
     if (!open) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
             <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
-                <h2 className="mb-4 text-lg font-semibold">Добавить админа</h2>
+                <h2 className="mb-4 text-lg font-semibold">Изменить админа</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input
                         type="text"
-                        name="fullName"
-                        placeholder="ФИО"
-                        value={form.fullName}
+                        name="oldUserName"
+                        placeholder="Старый логин"
+                        value={form.oldUserName}
                         onChange={handleChange}
                         className="w-full rounded-lg border px-3 py-2"
+                        disabled
                     />
                     <input
                         type="text"
                         name="userName"
-                        placeholder="Логин"
+                        placeholder="Новый логин"
                         value={form.userName}
                         onChange={handleChange}
                         className="w-full rounded-lg border px-3 py-2"
                     />
                     <input
                         type="password"
-                        name="password"
-                        placeholder="Пароль"
-                        value={form.password}
+                        name="oldPassword"
+                        placeholder="Старый пароль"
+                        value={form.oldPassword}
                         onChange={handleChange}
                         className="w-full rounded-lg border px-3 py-2"
                     />
                     <input
-                        type="text"
-                        name="phoneNumber"
-                        placeholder="Телефон"
-                        value={form.phoneNumber}
+                        type="password"
+                        name="password"
+                        placeholder="Новый пароль"
+                        value={form.password}
                         onChange={handleChange}
                         className="w-full rounded-lg border px-3 py-2"
                     />
@@ -101,4 +115,4 @@ export default function AddAdminModal({ open, onClose, onSuccess }) {
             </div>
         </div>
     );
-}
+};

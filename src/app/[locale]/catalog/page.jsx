@@ -3,12 +3,24 @@ import LinkArrowIcon from '@/icons/Arrow next page.svg'
 import CatalogComponent from "@/components/CatalogComponent";
 import { clothesCategory } from "@/constants/constants";
 import CallMe from "@/components/CallMe";
-import { products } from "../../../../products";
 
 export default async function CatalogPage({ params, searchParams }) {
 
     const { locale } = await params;
     const { type, priceFrom, priceTo, page } = await searchParams;
+
+    let products = [];
+
+    try {
+        const res = await fetch(`${process.env.BASE_URL}/api/Product?language=${locale}`, {
+            headers: { Accept: 'application/json' },
+            next: { revalidate: 600, tags: ['products'] },
+        });
+        if (!res.ok) throw new Error('Failed');
+        products = await res.json();
+    } catch (e) {
+        console.error(e);
+    };
 
     let filteredProducts = products;
     let typedProducts = products;
