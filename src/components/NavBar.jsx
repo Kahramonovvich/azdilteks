@@ -189,6 +189,12 @@ export default function NavBar({ locale }) {
                         </div>
                     </div>
                     <div className="left lg:hidden flex items-center gap-x-3">
+                        <Link
+                            className="flex items-center justify-center"
+                            href={`/${locale}/basket`}
+                        >
+                            <BagIcon />
+                        </Link>
                         <button
                             className='flex items-center justify-center'
                             onClick={() => setCallBackModal(true)}
@@ -223,14 +229,6 @@ export default function NavBar({ locale }) {
                                 </Link>
                             </div>
                         ))}
-                        <div className="box flex items-center">
-                            <Link
-                                className="box flex items-center justify-center font-medium"
-                                href={`/${locale}/basket`}
-                            >
-                                {locale === 'uz' ? ' Savatchangiz' : 'Корзина'}
-                            </Link>
-                        </div>
                         <div className={`language flex flex-col gap-y-2`}>
                             <button
                                 onClick={() => handleLanguage('uz')}

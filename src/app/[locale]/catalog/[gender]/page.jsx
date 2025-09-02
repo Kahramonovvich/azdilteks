@@ -22,8 +22,6 @@ export default async function GenderPage({ params, searchParams }) {
         console.error(e);
     };
 
-    const isUz = locale === 'uz';
-
     let filteredProducts = products;
     let typedProducts = products;
 
@@ -100,7 +98,7 @@ export default async function GenderPage({ params, searchParams }) {
                     />
                 </div>
             </div>
-            <CallMe />
+            <CallMe locale={locale} />
         </div>
-    )
-}
+    );
+};

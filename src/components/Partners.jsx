@@ -5,6 +5,7 @@ import FilaIcon from '@/icons/Vector-2.svg'
 import GucciIcon from '@/icons/Vector-3.svg'
 import ChampionIcon from '@/icons/Vector-4.svg'
 import ChanelIcon from '@/icons/Vector-5.svg'
+import Marquee from "react-fast-marquee";
 
 const partners = [
     { icon: <ZaraIcon /> },
@@ -17,20 +18,27 @@ const partners = [
 
 export default function Partners({ locale }) {
     return (
-        <div className="partners mt-[90px]">
+        <div className="partners lg:mt-[90px] mt-5">
             <div className="container">
                 <div className="top">
-                    <h3 className="text-5xl leading-[56px] text-center">
+                    <h3 className="lg:text-5xl lg:leading-[56px] text-2xl mb-2 lg:mb-0">
                         {locale === 'uz' ? 'Xamkorlarimiz' : 'Наши партнеры'}
                     </h3>
                 </div>
-                <div className="bottom grid grid-cols-6 gap-x-6 mt-12">
-                    {partners.map((item, index) => (
-                        <div key={index} className="box border rounded-2xl flex items-center justify-center py-6">
-                            {item.icon}
-                        </div>
-                    ))}
-                </div>
+                <Marquee
+                    speed={100}
+                    gradient={false}
+                    className='lg:mt-12 mt-3 lg:gap-x-6 gap-x-3'
+                >
+                    <div className="bottom grid grid-cols-6 lg:gap-x-6 gap-x-3">
+
+                        {partners.map((item, index) => (
+                            <div key={index} className="box border rounded-2xl flex items-center justify-center lg:py-6 p-3 lg:px-0">
+                                {item.icon}
+                            </div>
+                        ))}
+                    </div>
+                </Marquee>
             </div>
         </div>
     );

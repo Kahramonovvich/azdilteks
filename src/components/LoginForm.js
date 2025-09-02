@@ -30,11 +30,12 @@ export default function LoginForm() {
             if (!res.ok || data?.error) throw new Error(data?.message || 'Неверные данные');
 
             router.replace('/admin');
+            router.refresh();
         } catch (e) {
             setErr(e.message || 'Ошибка входа');
         } finally {
             setLoading(false);
-        }
+        };
     };
 
     return (

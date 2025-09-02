@@ -103,7 +103,7 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                 <div className="bottom mt-6 grid lg:grid-cols-3 lg:gap-x-6 gap-x-1.5 grid-cols-2">
                     {selectedProducts.slice(0, 3).map((item) => (
                         <div
-                            className="box last-of-type:hidden lg:last-of-type:block"
+                            className={`box ${selectedProducts?.length >= 2 ? 'last-of-type:hidden lg:last-of-type:block' : ''}`}
                             key={item.productId}
                         >
                             <div className="img relative aspect-[0.842] border rounded-[32px] bg-[#F6F6F6] overflow-hidden">

@@ -24,7 +24,9 @@
     "nextjs-toploader": "^3.8.16",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-toastify": "^11.0.5"
+    "react-fast-marquee": "^1.6.5",
+    "react-toastify": "^11.0.5",
+    "swiper": "^11.2.10"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",

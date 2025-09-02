@@ -80,7 +80,7 @@ export default async function CatalogPage({ params, searchParams }) {
                     />
                 </div>
             </div>
-            <CallMe />
+            <CallMe locale={locale} />
         </div>
     );
 };

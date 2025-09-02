@@ -100,7 +100,7 @@ export default function DetailsComponent({ locale }) {
                                         {product?.imageLinks?.map((img, index) => (
                                             <div
                                                 key={index}
-                                                className="img aspect-square w-14 bg-[#F5F5F5] rounded-md relative cursor-pointer"
+                                                className="img aspect-square overflow-hidden lg:w-14 w-10 bg-[#F5F5F5] rounded-md relative cursor-pointer"
                                                 onClick={() => setSelectedIndex(index)}
                                             >
                                                 <Image
@@ -113,7 +113,7 @@ export default function DetailsComponent({ locale }) {
                                         ))}
                                     </div>
                                 )}
-                                <div className="flex-1 bg-[#F6F6F6] border relative rounded-[15px]">
+                                <div className="flex-1 aspect-square lg:aspect-auto overflow-hidden bg-[#F6F6F6] border relative rounded-[15px]">
                                     <Image
                                         fill
                                         src={`/api/img?src=${encodeURIComponent(product?.imageLinks?.[selectedIndex])}`}

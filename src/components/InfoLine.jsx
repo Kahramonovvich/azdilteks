@@ -3,7 +3,7 @@ export default function InfoLine({ margin, locale }) {
 
     const info = [
         {
-            title: '10+',
+            title: '25+',
             subTitle: isUz ? 'Yillik tajriba' : 'Лет опыта',
         },
         {
@@ -17,13 +17,13 @@ export default function InfoLine({ margin, locale }) {
     ];
 
     return (
-        <div className={`infoLine mt-[${margin ? `${margin}px` : '90px'}]`}>
+        <div className={`infoLine lg:mt-[${margin ? `${margin}px` : '90px'}] mt-5`}>
             <div className="container">
-                <div className="box flex items-center justify-between py-[50px] bg-primary-orange px-[57.5px] rounded-[10px]">
+                <div className="box flex lg:flex-row flex-col lg:items-center justify-between gap-y-3 lg:py-[50px] bg-primary-orange lg:px-[57.5px] p-3 rounded-[10px]">
                     {info.map((item, index) => (
                         <div className="box text-white" key={index}>
-                            <h4 className="text-5xl leading-[56px] font-bold">{item.title}</h4>
-                            <p className="leading-[56px] text-[28px]">{item.subTitle}</p>
+                            <h4 className="lg:text-5xl text-2xl lg:leading-[56px] font-bold">{item.title}</h4>
+                            <p className="lg:leading-[56px] lg:text-[28px]">{item.subTitle}</p>
                         </div>
                     ))}
                 </div>

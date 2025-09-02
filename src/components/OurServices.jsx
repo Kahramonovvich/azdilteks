@@ -8,21 +8,21 @@ export default function OurServices({ locale }) {
 
     const info = [
         {
-            icon: <RotateIcon />,
+            icon: <RotateIcon className='w-10 h-10 lg:w-16 lg:h-16' />,
             title: isUz ? 'Bepul konsultatsiya va o‘lcham olish' : 'Бесплатная консультация и замер',
             subTitle: isUz
                 ? 'Biz bilan hamkorlik qilishni yanada qulay qiling. Mutaxassislarimiz siz uchun eng to‘g‘ri yechimni tanlab, kerakli o‘lchamlarni joyida aniqlab berishadi.'
                 : 'Сделайте сотрудничество с нами ещё удобнее. Наши специалисты подберут для вас оптимальное решение и определят необходимые размеры на объекте.',
         },
         {
-            icon: <SecurityIcon />,
+            icon: <SecurityIcon className='w-10 h-10 lg:w-16 lg:h-16' />,
             title: isUz ? 'Xavfsiz toʻlov' : 'Безопасная оплата',
             subTitle: isUz
                 ? 'Toʻlov jarayonlari xavfsiz va himoyalangan.'
                 : 'Ваши платежи надёжно защищены и обрабатываются безопасно.',
         },
         {
-            icon: <TruckIcon />,
+            icon: <TruckIcon className='w-10 h-10 lg:w-16 lg:h-16' />,
             title: isUz ? 'Vaqtida yetkazish' : 'Своевременная доставка',
             subTitle: isUz
                 ? 'Buyurtmalaringiz o‘z vaqtida yetkaziladi, vaʼda beramiz.'
@@ -31,14 +31,14 @@ export default function OurServices({ locale }) {
     ];
 
     return (
-        <div className="ourServices mt-[90px]">
+        <div className="ourServices lg:mt-[90px] mt-5">
             <div className="container">
-                <div className="grid grid-cols-4 gap-x-6">
-                    <div className="box">
-                        <h3 className="text-5xl leading-[56px]">
+                <div className="grid grid-cols-4 lg:gap-x-6 gap-3">
+                    <div className="box col-span-4 lg:col-span-1">
+                        <h3 className="lg:text-5xl lg:leading-[56px] text-2xl">
                             {isUz ? 'Bizning xizmatlarimiz' : 'Наши услуги'}
                         </h3>
-                        <p className="font-medium text-[#525252] mt-4">
+                        <p className="font-medium text-[#525252] lg:mt-4 mt-1">
                             {isUz
                                 ? 'Biz uzluksiz va yoqimli xarid qilish tajribasi muhimligini tushunamiz.'
                                 : 'Мы понимаем, насколько важен приятный и беспроблемный опыт покупок.'}
@@ -47,13 +47,15 @@ export default function OurServices({ locale }) {
                     {info.map((item, index) => (
                         <div
                             key={index}
-                            className="box border rounded-3xl p-4 flex flex-col gap-y-3"
+                            className="box border rounded-3xl p-4 flex flex-col gap-y-3 lg:col-span-1 col-span-4"
                         >
-                            {item.icon}
-                            <p className='text-2xl'>
-                                {item.title}
-                            </p>
-                            <p className='text-[#525252]'>
+                            <div className="flex items-center gap-x-2 lg:block">
+                                {item.icon}
+                                <p className='lg:text-2xl text-lg'>
+                                    {item.title}
+                                </p>
+                            </div>
+                            <p className='text-[#525252] text-sm lg:text-base'>
                                 {item.subTitle}
                             </p>
                         </div>

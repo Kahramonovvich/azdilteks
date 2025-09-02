@@ -13,3 +13,7 @@
 ::-webkit-scrollbar {
     width: 0px;
 }
+
+.rfm-initial-child-container, .rfm-child {
+    flex: 1 1 0% !important;
+}

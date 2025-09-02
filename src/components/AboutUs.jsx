@@ -28,13 +28,13 @@ export default function AboutUs({ margin, locale }) {
                 </div>
                 <div className="bottom lg:mt-16 mt-2.5 grid grid-cols-12 grid-rows-2 lg:gap-6 gap-3">
                     <div className="left lg:col-span-7 col-span-12 lg:row-span-2 bg-[#F6F6F6] rounded-3xl lg:pt-10 lg:pl-8 relative flex gap-x-2 py-4 lg:pb-0 px-6 lg:pr-0">
-                        <div className="absolute bottom-0 left-0">
+                        <div className="absolute bottom-0 left-0 hidden lg:block">
                             <LeftDownWildIcon />
                         </div>
-                        <div className="absolute top-3 right-0">
+                        <div className="absolute top-3 right-0 hidden lg:block">
                             <LeftTopWildIcon />
                         </div>
-                        <div className="text lg:max-w-[340px] max-w-[157px]">
+                        <div className="text lg:max-w-[340px]">
                             <h3 className="lg:text-[64px] lg:leading-[72px] text-2xl">
                                 {isUz ? 'Eng sifatli maxsulotlar' : 'Продукция наивысшего качества'}
                             </h3>
@@ -59,7 +59,7 @@ export default function AboutUs({ margin, locale }) {
                                 {isUz ? 'Ko’rish' : 'Смотреть'}
                             </button>
                         </div>
-                        <div className="img relative aspect-[0.59] lg:max-w-[280px] flex-1">
+                        <div className="img relative aspect-[0.59] lg:max-w-[280px] flex-1 hidden lg:block">
                             <Image
                                 fill
                                 src={'/images/aboutImg.png'}
@@ -68,11 +68,14 @@ export default function AboutUs({ margin, locale }) {
                             />
                         </div>
                     </div>
-                    <div className="rightTop lg:col-span-5 col-span-6 row-span-1 bg-[#F6F6F6] rounded-3xl relative lg:p-6 pb-0 pl-4 pt-4 flex flex-col lg:flex-row justify-between">
+                    <div
+                        className="rightTop lg:col-span-5 col-span-12 row-span-1 bg-[#F6F6F6] rounded-3xl relative lg:p-6
+                            p-4 hidden lg:flex flex-col lg:flex-row justify-between"
+                    >
                         <div className="absolute bottom-0 left-0">
                             <RightBottomWildIcon />
                         </div>
-                        <div className="absolute top-2 right-5">
+                        <div className="absolute top-2 right-5 hidden lg:block">
                             <RightTopWildIcon />
                         </div>
                         <div className="text lg:max-w-[263px] lg:text-2xl lg:leading-[130%] lg:font-normal font-semibold text-xs">
@@ -88,18 +91,21 @@ export default function AboutUs({ margin, locale }) {
                             />
                         </div>
                     </div>
-                    <div className="rightBottom bg-primary-orange lg:col-span-5 col-span-6 rounded-3xl flex items-center gap-x-2.5 p-8 text-[#E2DBCB]">
+                    <div
+                        className="rightBottom bg-primary-orange lg:col-span-5 col-span-12 rounded-3xl
+                            flex items-center gap-x-2.5 lg:p-8 p-4 text-[#E2DBCB]"
+                    >
                         <div className="text flex-1">
-                            <p className='text-2xl text-nowrap'>
+                            <p className='lg:text-2xl text-nowrap'>
                                 {isUz ? 'Kompaniyamiz qadriyatlari' : 'Наши ценности'}
                             </p>
-                            <p className='text-xs leading-6 mt-8'>
+                            <p className='text-xs lg:leading-6 lg:mt-8 mt-3'>
                                 {isUz
                                     ? `Biz sifatli mahsulot bilan bir qatorda, hamkorlikdagi ishonchli aloqani ham muhim deb bilamiz. Doimiy takomillashuv, mijoz fikrlariga ochiqlik va innovatsion yondashuv – bu bizning kundalik mezonlarimizdir. Siz buyurtma berganingizda, nafaqat kiyim, balki sifat, xizmat va halollik olasiz.`
                                     : `Мы считаем важным не только качественный продукт, но и надёжные партнёрские отношения. Постоянное развитие, открытость клиентским отзывам и инновационный подход — это наши повседневные принципы. Заказывая у нас, вы получаете не просто одежду, а качество, сервис и честность.`}
                             </p>
                         </div>
-                        <RedWildIcon />
+                        <RedWildIcon className='hidden lg:block' />
                     </div>
                 </div>
             </div>

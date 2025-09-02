@@ -2,25 +2,24 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Shield, Boxes, ShoppingCart, LayoutDashboard, ChevronLeft } from 'lucide-react';
+import { Shield, Boxes, ShoppingCart, LayoutDashboard, ChevronLeft, Smartphone } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const nav = [
     { href: '/admin', label: 'Админы', icon: Shield },
     { href: '/admin/products', label: 'Продукты', icon: Boxes },
     { href: '/admin/orders', label: 'Заказы', icon: ShoppingCart },
+    { href: '/admin/callMe', label: 'Оратная связь', icon: Smartphone },
 ];
 
 export default function Sidebar({ open, setOpen }) {
     const pathname = usePathname();
     const [expanded, setExpanded] = useState(true);
 
-    // Закрывать на мобильных при переходе
     useEffect(() => {
         if (typeof window !== 'undefined' && window.innerWidth < 1024 && open) {
             setOpen(false);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathname]);
 
     const Item = ({ href, label, icon: Icon }) => {
@@ -42,12 +41,10 @@ export default function Sidebar({ open, setOpen }) {
 
     return (
         <>
-            {/* Оверлей для мобилки */}
             <div
                 className={`fixed inset-0 z-40 bg-black/30 lg:hidden transition-opacity ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
                 onClick={() => setOpen(false)}
             />
-            {/* Сайдбар */}
             <aside
                 className={`
           fixed z-50 top-0 left-0 h-screen bg-white shadow-lg border-r border-gray-200
@@ -62,7 +59,6 @@ export default function Sidebar({ open, setOpen }) {
                         {expanded && <span className="font-semibold">Admin Panel</span>}
                     </div>
 
-                    {/* Кнопка сворачивания (только на десктопе) */}
                     <button
                         className="hidden lg:grid place-items-center h-8 w-8 rounded-lg hover:bg-gray-100"
                         onClick={() => setExpanded((v) => !v)}
@@ -79,10 +75,6 @@ export default function Sidebar({ open, setOpen }) {
                         <Item key={n.href} {...n} />
                     ))}
                 </nav>
-
-                <div className="mt-auto p-3 text-xs text-gray-400">
-                    {expanded && <p>© {new Date().getFullYear()} Admin</p>}
-                </div>
             </aside>
         </>
     );

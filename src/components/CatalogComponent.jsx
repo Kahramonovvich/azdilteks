@@ -189,7 +189,7 @@ export default function CatalogComponent({
                             />
                         </div>
                     </div>
-                    <div className={`filter lg:w-[282px] w-full absolute right-0 ${openFilter ? 'lg:relative' : 'lg:absolute'}`}>
+                    <div className={`filter lg:w-[282px] w-full absolute right-0 ${openFilter ? 'lg:relative' : 'lg:absolute max-w-0 lg:max-w-full'}`}>
                         <div className={`filterBox lg:w-[282px] w-full bg-white duration-300 ease-in-out transition-all
                             ${openFilter ? 'translate-x-0' : 'translate-x-full'}`}
                         >
