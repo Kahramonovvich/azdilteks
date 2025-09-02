@@ -4,12 +4,15 @@ import axios from "axios";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import OrderMoreInfoModal from "./OrderMoreInfoModal";
 
 export default function OrderComponent({ locale }) {
 
     const [orders, setOrders] = useState([]);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [openInfo, setOpenInfo] = useState(false);
+    const [selectedOrder, setselectedOrder] = useState(null);
 
     const newOrders = orders.filter(ord => Number(ord.status) === 1) || [];
     const inProcessOrders = orders.filter(ord => Number(ord.status) === 2) || [];
@@ -67,6 +70,11 @@ export default function OrderComponent({ locale }) {
         };
     };
 
+    const handleMore = (order) => {
+        setOpenInfo(true);
+        setselectedOrder(order);
+    };
+
     useEffect(() => {
         loadOrders();
         loadProducts();
@@ -74,6 +82,12 @@ export default function OrderComponent({ locale }) {
 
     return (
         <div className="grid grid-cols-3">
+            <OrderMoreInfoModal 
+                order={selectedOrder}
+                products={products}
+                openInfo={openInfo}
+                setOpenInfo={setOpenInfo}
+            />
             {loading && (
                 <div className="loader fixed top-0 left-0 h-full w-full flex items-center justify-center z-50 bg-gray-300 bg-opacity-20">
                     <CircularProgress />
@@ -100,7 +114,10 @@ export default function OrderComponent({ locale }) {
                             Mahsulotlar soni: <span className="font-semibold">{totalQty(order?.products)}</span>
                         </p>
                         <div className="btnBox flex items-center justify-between mt-3">
-                            <button className="font-medium rounded-md bg-green-400 text-white px-2 py-1">
+                            <button
+                                className="font-medium rounded-md bg-green-400 text-white px-2 py-1"
+                                onClick={() => handleMore(order)}
+                            >
                                 Batafsil
                             </button>
                             <button
@@ -135,7 +152,10 @@ export default function OrderComponent({ locale }) {
                             Mahsulotlar soni: <span className="font-semibold">{totalQty(order?.products)}</span>
                         </p>
                         <div className="btnBox flex items-center justify-between mt-3">
-                            <button className="font-medium rounded-md bg-green-400 text-white px-2 py-1">
+                            <button
+                                className="font-medium rounded-md bg-green-400 text-white px-2 py-1"
+                                onClick={() => handleMore(order)}
+                            >
                                 Batafsil
                             </button>
                             <button
@@ -159,7 +179,7 @@ export default function OrderComponent({ locale }) {
                     <div
                         key={order.cartId}
                         className="info my-3 mx-3 p-2 bg-gray-200 rounded-md"
-                        // onClick={() => handleUpdateOrder(order.cartId, 1)}
+                    // onClick={() => handleUpdateOrder(order.cartId, 1)}
                     >
                         <p className="text-lg font-medium">
                             Buyurtma raqami: <span className="font-semibold">{order.cartId}</span>
@@ -171,7 +191,10 @@ export default function OrderComponent({ locale }) {
                             Mahsulotlar soni: <span className="font-semibold">{totalQty(order?.products)}</span>
                         </p>
                         <div className="btnBox flex items-center justify-between mt-3">
-                            <button className="font-medium rounded-md bg-green-400 text-white px-2 py-1">
+                            <button
+                                className="font-medium rounded-md bg-green-400 text-white px-2 py-1"
+                                onClick={() => handleMore(order)}
+                            >
                                 Batafsil
                             </button>
                         </div>

@@ -8,16 +8,15 @@ export const cleanPhone = (raw) => {
     return digits.startsWith('998') ? `+${digits}` : `+998${digits}`;
 };
 
-export const cleanDateToISO = (raw) => {
-    if (!raw) return null;
-    const [dd, mm, yyyy] = raw.split('.');
-    if (!dd || !mm || !yyyy) return null;
-    try {
-        return new Date(`${yyyy}-${mm}-${dd}`).toISOString(); // в ISO
-    } catch {
-        return null;
-    }
+export const normalizeLocal = (s = '') => {
+    let digits = s.replace(/^\s*\+?998/, '').replace(/\D/g, '').slice(0, 9);
+    if (!digits) return '';
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 5) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2, 5)}-${digits.slice(5)}`;
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 5)}-${digits.slice(5, 7)}-${digits.slice(7, 9)}`;
 };
+
 
 export const normalizeSizes = (raw) => {
     if (raw == null) return [];

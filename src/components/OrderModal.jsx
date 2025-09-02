@@ -2,10 +2,9 @@
 import { useGlobalContext } from "@/contexts/contexts";
 import { Modal } from "@mui/material";
 import CloseIcon from '@/icons/x 1.svg'
-import { useMask } from "@react-input/mask";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import { cleanDateToISO, cleanPhone } from "@/utils/utils";
+import { cleanPhone, normalizeLocal } from "@/utils/utils";
 import axios from "axios";
 
 export default function OrderModal({ totalPrice }) {
@@ -16,20 +15,9 @@ export default function OrderModal({ totalPrice }) {
         return null;
     };
 
-    const inputPhoneRef = useMask({
-        mask: '+998 (__) ___-__-__',
-        replacement: { _: /\d/ },
-        showMask: true
-    });
-    const inputDateRef = useMask({
-        mask: "dd.mm.yyyy",
-        replacement: { d: /\d/, m: /\d/, y: /\d/ },
-        showMask: true
-    });
-
     const [name, setName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('+998 (__) ___-__-__');
-    const [birthDate, setBirthDate] = useState('dd.mm.yyyy');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [birthDate, setBirthDate] = useState('');
     const [isLoading, setIsloading] = useState(false);
 
     const handleClose = () => {
@@ -41,18 +29,6 @@ export default function OrderModal({ totalPrice }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const date = inputDateRef.current?.value;
-        if (!date || date.includes('_') || !/^\d{2}\.\d{2}\.\d{4}$/.test(date)) {
-            toast.warn('Tug`ilgan kuningizni kiriting!');
-            return;
-        };
-
-        const phone = inputPhoneRef.current?.value;
-        if (!phone || phone.includes('_')) {
-            toast.warn("Telefon raqamingizni kiriting!");
-            return;
-        };
 
         setIsloading(true);
 
@@ -68,7 +44,7 @@ export default function OrderModal({ totalPrice }) {
         const sendedOrders = {
             user: {
                 name: name,
-                birthDate: cleanDateToISO(birthDate),
+                birthDate: birthDate ? new Date(birthDate).toISOString() : new Date().toISOString(),
                 phoneNumber: cleanPhone(phoneNumber)
             },
             orders: ord,
@@ -146,12 +122,10 @@ export default function OrderModal({ totalPrice }) {
                                 Tug’ilgan kun
                             </label>
                             <input
-                                ref={inputDateRef}
-                                type='text'
+                                type='date'
                                 id="birthDate"
-                                className="p-4 border rounded-lg text-sm leading-[22px] text-[#A3A3A3] font-medium outline-none"
+                                className="p-4 border rounded-lg text-sm leading-[22px] text-[#A3A3A3] font-medium outline-none w-full"
                                 placeholder="Tug’ilgan kuningiz"
-                                required
                                 onChange={(e) => setBirthDate(e.target.value)}
                                 value={birthDate}
                             />
@@ -163,16 +137,24 @@ export default function OrderModal({ totalPrice }) {
                             >
                                 Telefon raqam
                             </label>
-                            <input
-                                ref={inputPhoneRef}
-                                type='text'
-                                id="phoneNumber"
-                                className="p-4 border rounded-lg text-sm leading-[22px] text-[#A3A3A3] font-medium outline-none"
-                                placeholder="Telefon raqamingiz"
-                                required
-                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                value={phoneNumber}
-                            />
+                            <div className="flex items-center gap-2">
+                                <span className="p-4 border text-sm font-bold rounded-lg bg-gray-100 text-gray-700">+998</span>
+                                <input
+                                    type="tel"
+                                    inputMode="numeric"
+                                    autoComplete="tel"
+                                    className="flex-1 p-4 border rounded-lg text-sm outline-none"
+                                    required
+                                    onChange={(e) => setPhoneNumber(normalizeLocal(e.target.value))}
+                                    onPaste={(e) => {
+                                        e.preventDefault();
+                                        const t = e.clipboardData.getData('text') || '';
+                                        setPhoneNumber(normalizeLocal(t));
+                                    }}
+                                    value={phoneNumber}
+                                />
+                            </div>
+
                         </div>
                         <div className="btnBox flex flex-col gap-y-[18px] mt-0.5">
                             <button
