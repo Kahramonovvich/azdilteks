@@ -2,48 +2,42 @@
 import { useGlobalContext } from "@/contexts/contexts";
 import { Modal } from "@mui/material";
 import CloseIcon from '@/icons/x 1.svg'
-import { useMask } from "@react-input/mask";
-import { toast } from "react-toastify";
-import { useState } from "react";
 
-export default function CallBackModal() {
+export default function CallBackModal({ locale }) {
 
     const { callBackModal, setCallBackModal } = useGlobalContext();
 
-    const inputPhoneRef = useMask({
-        mask: '+998 (__) ___-__-__',
-        replacement: { _: /\d/ },
-        showMask: true
-    });
-    const inputDateRef = useMask({
-        mask: "dd.mm.yyyy",
-        replacement: { d: /\d/, m: /\d/, y: /\d/ },
-        showMask: true
-    });
-
-    const [name, setName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('+998 (__) ___-__-__');
-    const [birthDate, setBirthDate] = useState('dd.mm.yyyy');
-
     const handleClose = () => setCallBackModal(false);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const date = inputDateRef.current?.value;
-        if (!date || date.includes('_') || !/^\d{2}\.\d{2}\.\d{4}$/.test(date)) {
-            toast.warn('Tug`ilgan kuningizni kiriting!');
-            return;
-        };
-
-        const phone = inputPhoneRef.current?.value;
-        if (!phone || phone.includes('_')) {
-            toast.warn("Telefon raqamingizni kiriting!");
-            return;
-        };
-
-        setCallBackModal(false);
-        toast.success("Tez orada aloqaga chiqamiz, kuting!");
+    const text = {
+        uz: [
+            {
+                title: "Vaqtingizni kutishga sarflamang — o‘zingiz qo‘ng‘iroq qiling!",
+                subTitle: "Biz har doim qo‘ng‘iroqlaringizga xursand bo‘lamiz va barcha savollaringizga batafsil javob beramiz."
+            },
+            {
+                title: "Mahsulot va xizmatlarimiz haqida bilmoqchimisiz?",
+                subTitle: "Mutaxassislarimiz hammasini tushuntirib beradi, tanlovingizda yordam qiladi va aynan siz uchun eng yaxshi yechimni tavsiya qiladi."
+            },
+            {
+                title: "Buyurtma yoki yetkazib berishda yordam kerakmi?",
+                subTitle: "Biz har bir bosqichni izohlab beramiz va xarid jarayonini siz uchun iloji boricha qulay va oddiy qilamiz."
+            },
+        ],
+        ru: [
+            {
+                title: 'Не тратьте время на ожидание — звоните нам сами!',
+                subTitle: 'Мы всегда рады вашим звонкам и готовы подробно ответить на все вопросы.'
+            },
+            {
+                title: 'Хотите узнать о наших товарах и услугах?',
+                subTitle: 'Наши специалисты расскажут всё в деталях, помогут разобраться с выбором и подскажут лучшие решения именно для вас.'
+            },
+            {
+                title: 'Нужна помощь с заказом или доставкой?',
+                subTitle: 'Мы объясним каждый шаг и сделаем так, чтобы покупки у нас были максимально удобными и простыми.'
+            },
+        ]
     };
 
     return (
@@ -55,7 +49,7 @@ export default function CallBackModal() {
             className="px-4 lg:p-0"
         >
             <div className="relative w-full h-full">
-                <div className="box absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-[30px] lg:p-10 p-3 w-full lg:w-[456px]">
+                <div className="box absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-[30px] lg:p-10 p-3 w-full lg:w-[500px]">
                     <div className="top flex items-center justify-between py-1.5">
                         <p className="font-bold text-2xl">
                             Bog’lanish
@@ -68,72 +62,40 @@ export default function CallBackModal() {
                         </button>
                     </div>
                     <div className="border-t my-3"></div>
-                    <form
-                        className="flex flex-col gap-y-4"
-                        onSubmit={handleSubmit}
-                    >
-                        <div className="box flex flex-col gap-y-2">
-                            <label
-                                htmlFor="name"
-                                className="text-sm leading-[22px] text-[#A3A3A3]"
+                    <div className="flex flex-col gap-y-3">
+                        {text[locale].map((t, idx) => (
+                            <div
+                                className="box"
+                                key={idx}
                             >
-                                Ismingiz
-                            </label>
-                            <input
-                                type="text"
-                                id="name"
-                                className="p-4 border rounded-lg text-sm leading-[22px] text-[#A3A3A3] font-medium outline-none"
-                                placeholder="Murodjon"
-                                required
-                                onChange={(e) => setName(e.target.value)}
-                                value={name}
-                            />
-                        </div>
-                        <div className="box flex flex-col gap-y-2">
-                            <label
-                                htmlFor="birthDate"
-                                className="text-sm leading-[22px] text-[#A3A3A3]"
-                            >
-                                Tug’ilgan kun
-                            </label>
-                            <input
-                                ref={inputDateRef}
-                                type='text'
-                                id="birthDate"
-                                className="p-4 border rounded-lg text-sm leading-[22px] text-[#A3A3A3] font-medium outline-none"
-                                placeholder="Tug’ilgan kuningiz"
-                                required
-                                onChange={(e) => setBirthDate(e.target.value)}
-                                value={birthDate}
-                            />
-                        </div>
-                        <div className="box flex flex-col gap-y-2">
-                            <label
-                                htmlFor="phoneNumber"
-                                className="text-sm leading-[22px] text-[#A3A3A3]"
-                            >
-                                Telefon raqam
-                            </label>
-                            <input
-                                ref={inputPhoneRef}
-                                type='text'
-                                id="phoneNumber"
-                                className="p-4 border rounded-lg text-sm leading-[22px] text-[#A3A3A3] font-medium outline-none"
-                                placeholder="Telefon raqamingiz"
-                                required
-                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                value={phoneNumber}
-                            />
-                        </div>
-                        <div className="btnBox flex flex-col gap-y-[18px] mt-0.5">
-                            <button
-                                className="rounded-3xl p-4 bg-primary-orange text-white font-medium"
-                                type='submit'
-                            >
-                                Jo’natish
-                            </button>
-                        </div>
-                    </form>
+                                <p className="text-lg font-semibold">
+                                    {t.title}
+                                </p>
+                                <p className="font-medium text-sm mt-2">
+                                    {t.subTitle}
+                                </p>
+                            </div>
+                        ))}
+                        <p className="text-sm font-medium">
+                            {locale === 'uz' ?
+                                'Hoziroq qo‘ng‘iroq qiling — va kerakli barcha ma’lumotni tez, qulay va kutmasdan oling!' :
+                                'Позвоните прямо сейчас — и получите всю нужную информацию быстро, удобно и без лишних ожиданий!'
+                            }
+                        </p>
+                    </div>
+                    <div className="btnBox grid grid-cols-2 items-center gap-x-3 mt-5">
+                        <p
+                            className="font-semibol text-center"
+                        >
+                            +998 (93) 358-22-20
+                        </p>
+                        <a
+                            href="tel:+998933582220"
+                            className="font-semibol text-white text-center rounded-xl p-3 bg-primary-orange"
+                        >
+                            Qong'iroq qilish
+                        </a>
+                    </div>
                 </div>
             </div>
         </Modal>

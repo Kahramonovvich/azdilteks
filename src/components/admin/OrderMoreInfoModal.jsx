@@ -26,11 +26,7 @@ export default function OrderMoreInfoModal({ order, products, openInfo, setOpenI
         return { ...op, info };
     });
 
-    const colorFind = (col) => {
-        colors.find((c) => c.slug === col);
-    };
-
-    console.log(colorFind('red'));
+    const colorFind = (col) => colors.find((c) => c.slug === col);
 
     return (
         <Modal open={openInfo} className='py-5'>
@@ -51,13 +47,13 @@ export default function OrderMoreInfoModal({ order, products, openInfo, setOpenI
                     <div className="space-y-2 text-sm">
                         <div><b>Mijoz:</b> {order.name}</div>
                         <div><b>Telefon:</b> {order.phoneNumber}</div>
-                        <div><b>Tug‘ilgan sana:</b> {order.birthDate?.split('T')[0]}</div>
+                        <div><b>Tug'ilgan sana:</b> {order.birthDate?.split('T')[0]}</div>
                         <div><b>Umumiy summa:</b> {formatPrice(order.totalPrice)}</div>
                     </div>
 
                     <div className="divide-y rounded-lg border">
                         {items.length === 0 && (
-                            <div className="p-4 text-sm text-gray-500">Mahsulotlar yo‘q</div>
+                            <div className="p-4 text-sm text-gray-500">Mahsulotlar yo'q</div>
                         )}
                         {items.map((it, idx) => (
                             <div key={idx} className="p-4 flex items-center gap-4">
@@ -75,8 +71,22 @@ export default function OrderMoreInfoModal({ order, products, openInfo, setOpenI
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="font-medium">{it.info?.name || `Mahsulot #${it.productId}`}</div>
-                                    <div className="text-sm text-gray-600">
-                                        O‘lcham: {it.size} | Rang: {it.colour} | Soni: {it.quantity}
+                                    <div className="text-sm text-gray-600 font-medium flex items-center gap-x-3">
+                                        <div className="box">
+                                            O'lcham: {it.size}
+                                        </div>
+                                        |
+                                        <div className="box flex items-center gap-x-1">
+                                            Rang: <div
+                                                className={`w-4 h-4 rounded-full ${it.colour === 'white' ? 'border' : ''}`}
+                                                style={{ backgroundColor: colorFind(it.colour)?.hex }}
+                                            ></div>
+                                            {colorFind(it.colour)?.name}
+                                        </div>
+                                        |
+                                        <div className="box">
+                                            Soni: {it.quantity}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="text-right shrink-0">

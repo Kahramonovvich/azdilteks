@@ -1,34 +1,32 @@
 'use client'
-import { useMask } from "@react-input/mask";
+import { cleanPhone, normalizeLocal } from "@/utils/utils";
 import axios from "axios";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
 export default function CallMe({ locale }) {
-    
+
     const isUz = locale === 'uz';
 
-    const inputPhoneRef = useMask({
-        mask: '+998 __ ___ __ __',
-        replacement: { _: /\d/ },
-    });
+    const [phoneNumber, setPhoneNumber] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const phone = inputPhoneRef.current?.value;
-        if (!phone || phone.includes('_')) {
-            toast.warn(isUz ? "Telefon raqamingizni kiriting!" : "Введите номер телефона!");
+        if (phoneNumber.length < 14) {
+            toast.warn("Telefon raqamingizni to'liq kiriting!");
             return;
         };
 
         try {
             const res = await axios.post('/api/CallMe/create',
-                { phoneNumber: phone.replace(/\s+/g, '') }, {
+                { phoneNumber: cleanPhone(phoneNumber) }, {
                 headers: { 'Content-Type': 'application/json' }
             });
 
             if (res.status >= 200 && res.status < 300) {
                 toast.success(isUz ? "Tez orada aloqaga chiqamiz, kuting!" : "Мы скоро с вами свяжемся, пожалуйста, подождите!");
+                setPhoneNumber('');
             };
         } catch (e) {
             console.error(e);
@@ -54,14 +52,26 @@ export default function CallMe({ locale }) {
                         className="flex gap-2 lg:mt-12 mt-4 flex-col lg:flex-row"
                         onSubmit={handleSubmit}
                     >
-                        <input
-                            type="text"
-                            name="phoneNumber"
-                            id="phoneNumber"
-                            ref={inputPhoneRef}
-                            className="border outline-none rounded-3xl bg-transparent border-[#E5E5E5] p-4 w-[327px] font-medium text-sm leading-[22px] text-[#A3A3A3]"
-                            placeholder="+998 99 999 99 99"
-                        />
+                        <div className="flex items-center">
+                            <label className="p-4 pr-1 border rounded-r-none border-r-0 border-[#E5E5E5] rounded-3xl font-medium text-sm leading-[22px] text-[#A3A3A3]">+998</label>
+                            <input
+                                type="tel"
+                                inputMode="numeric"
+                                autoComplete="tel"
+                                name="phoneNumber"
+                                id="phoneNumber"
+                                required
+                                className="border outline-none rounded-3xl rounded-l-none border-l-0 bg-transparent border-[#E5E5E5] p-4 pl-1 w-[327px] font-medium text-sm leading-[22px] text-[#A3A3A3]"
+                                onChange={(e) => setPhoneNumber(normalizeLocal(e.target.value))}
+                                onPaste={(e) => {
+                                    e.preventDefault();
+                                    const t = e.clipboardData.getData('text') || '';
+                                    setPhoneNumber(normalizeLocal(t));
+                                }}
+                                placeholder="(99) 999-99-99"
+                                value={phoneNumber}
+                            />
+                        </div>
                         <button
                             type="submit"
                             className="bg-primary-orange py-4 px-10 rounded-3xl text-white font-medium"

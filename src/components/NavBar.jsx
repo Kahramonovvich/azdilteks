@@ -87,7 +87,7 @@ export default function NavBar({ locale }) {
 
     return (
         <nav className={`nav relative lg:py-6 py-3 bg-white`}>
-            <CallBackModal />
+            <CallBackModal locale={locale} />
             <div className="container">
                 <div className="flex items-center justify-between">
                     <Link
