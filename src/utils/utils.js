@@ -9,7 +9,7 @@ export const cleanPhone = (raw) => {
 };
 
 export const normalizeLocal = (s = '') => {
-    let digits = s.replace(/^\s*\+?998/, '').replace(/\D/g, '').slice(0, 9);
+    let digits = s.replace(/^\s*\+998/, '').replace(/\D/g, '').slice(0, 9);
     if (!digits) return '';
     if (digits.length <= 2) return digits;
     if (digits.length <= 5) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;

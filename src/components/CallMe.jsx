@@ -53,7 +53,7 @@ export default function CallMe({ locale }) {
                         onSubmit={handleSubmit}
                     >
                         <div className="flex items-center">
-                            <label className="p-4 pr-1 border rounded-r-none border-r-0 border-[#E5E5E5] rounded-3xl font-medium text-sm leading-[22px] text-[#A3A3A3]">+998</label>
+                            <label className="p-4 border border-gray-300 rounded-r-none bg-gray-300 rounded-3xl font-medium text-sm leading-[22px]">+998</label>
                             <input
                                 type="tel"
                                 inputMode="numeric"
@@ -61,7 +61,7 @@ export default function CallMe({ locale }) {
                                 name="phoneNumber"
                                 id="phoneNumber"
                                 required
-                                className="border outline-none rounded-3xl rounded-l-none border-l-0 bg-transparent border-[#E5E5E5] p-4 pl-1 w-[327px] font-medium text-sm leading-[22px] text-[#A3A3A3]"
+                                className="border outline-none rounded-3xl rounded-l-none border-l-0 bg-transparent border-[#E5E5E5] p-4 w-[327px] font-medium text-sm leading-[22px] text-[#A3A3A3]"
                                 onChange={(e) => setPhoneNumber(normalizeLocal(e.target.value))}
                                 onPaste={(e) => {
                                     e.preventDefault();

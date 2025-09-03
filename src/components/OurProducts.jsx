@@ -37,10 +37,10 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                     <h3 className="lg:text-5xl lg:leading-[56px] text-2xl">
                         {texts.title}
                     </h3>
-                    <div className="flex items-center gap-x-5 mt-12">
+                    <div className="lg:flex grid grid-cols-2 items-center lg:gap-x-5 gap-x-1.5 lg:mt-12 mt-5">
                         <div className="dropDown cursor-pointer rounded-3xl border lg:px-5 lg:py-3 p-3 relative">
                             <div
-                                className="box flex items-center gap-x-2"
+                                className="box flex items-center gap-x-2 justify-between"
                                 onClick={() => setDropDown(!dropDown)}
                             >
                                 <p className='font-medium lg:text-base text-sm text-nowrap'>
@@ -76,34 +76,60 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                                 </button>
                             </div>
                         </div>
-                        <button
-                            onClick={() => {
-                                router.push(`/${locale}/?${sex ? `gender=${sex}` : ''}`);
-                                setActiveIndustry('all');
-                            }}
-                            className={`font-medium lg:px-5 lg:py-3 p-3 text-nowrap text-sm lg:text-base rounded-3xl ${activeIndustry === 'all' ? 'bg-black text-white' : ''}`}
-                        >
-                            {texts.all}
-                        </button>
-                        {industry.map((item, index) => (
+                        <div className="hidden lg:flex items-center gap-x-5">
                             <button
-                                key={index}
                                 onClick={() => {
-                                    router.push(`/${locale}/?${sex ? `gender=${sex}&` : ''}industry=${item.slug}`);
-                                    setActiveIndustry(item.slug);
+                                    router.push(`/${locale}/?${sex ? `gender=${sex}` : ''}`);
+                                    setActiveIndustry('all');
                                 }}
-                                className={`font-medium lg:px-5 lg:py-3 p-3 lg:text-base text-sm rounded-3xl text-nowrap
-                                    ${activeIndustry === item.slug ? 'bg-black text-white' : ''}`}
+                                className={`font-medium lg:px-5 lg:py-3 p-3 text-nowrap text-sm lg:text-base rounded-3xl transition-all duration-300 ease-in-out
+                                    ${activeIndustry === 'all' ? 'bg-black text-white' : 'hover:bg-gray-500 hover:text-white'}`}
                             >
-                                {locale === 'ru' ? item.nameRu : item.name}
+                                {texts.all}
                             </button>
-                        ))}
+                            {industry.map((item, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => {
+                                        router.push(`/${locale}/?${sex ? `gender=${sex}&` : ''}industry=${item.slug}`);
+                                        setActiveIndustry(item.slug);
+                                    }}
+                                    className={`font-medium lg:px-5 lg:py-3 p-3 lg:text-base text-sm rounded-3xl text-nowrap transition-all duration-300 ease-in-out
+                                    ${activeIndustry === item.slug ? 'bg-black text-white' : 'hover:bg-gray-500 hover:text-white'}`}
+                                >
+                                    {locale === 'ru' ? item.nameRu : item.name}
+                                </button>
+                            ))}
+                        </div>
+                        <select
+                            name="industry"
+                            id="industry"
+                            value={activeIndustry}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === 'all') {
+                                    router.push(`/${locale}/?${sex ? `gender=${sex}` : ''}`);
+                                    setActiveIndustry('all');
+                                } else {
+                                    router.push(`/${locale}/?${sex ? `gender=${sex}&` : ''}industry=${value}`);
+                                    setActiveIndustry(value);
+                                }
+                            }}
+                            className="block lg:hidden w-full border rounded-3xl px-3 py-3.5 font-medium text-sm focus:outline-none bg-transparent h-[49.6px]"
+                        >
+                            <option value="all">{texts.all}</option>
+                            {industry.map((item, index) => (
+                                <option key={index} value={item.slug}>
+                                    {locale === 'ru' ? item.nameRu : item.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
-                <div className="bottom mt-6 grid lg:grid-cols-3 lg:gap-x-6 gap-x-1.5 grid-cols-2">
-                    {selectedProducts.slice(0, 3).map((item) => (
+                <div className="bottom mt-6 grid lg:grid-cols-3 lg:gap-6 gap-x-1.5 gap-y-3 grid-cols-2">
+                    {selectedProducts.slice(0, 4).map((item) => (
                         <div
-                            className={`box ${selectedProducts?.length >= 2 ? 'last-of-type:hidden lg:last-of-type:block' : ''}`}
+                            className={`box ${selectedProducts?.length >= 3 ? 'lg:last-of-type:hidden' : ''}`}
                             key={item.productId}
                         >
                             <div className="img relative aspect-[0.842] border rounded-[32px] bg-[#F6F6F6] overflow-hidden">
