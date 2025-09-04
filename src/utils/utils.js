@@ -65,3 +65,7 @@ export const normalizeColors = (raw) => {
 
     return [];
 };
+
+export const getDiscountPercent = (oldPrice, newPrice) => {
+    return Math.floor(((oldPrice - newPrice) / oldPrice) * 100);
+};

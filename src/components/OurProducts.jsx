@@ -3,7 +3,7 @@ import DropDownIcon from '@/icons/Arrow.svg'
 import { useEffect, useState } from 'react';
 import { useRouter } from 'nextjs-toploader/app'
 import Image from 'next/image';
-import { formatPrice } from '@/utils/utils';
+import { formatPrice, getDiscountPercent } from '@/utils/utils';
 import { industry } from '@/constants/constants';
 import { useGlobalContext } from '@/contexts/contexts';
 import Link from 'next/link';
@@ -133,6 +133,13 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                             key={item.productId}
                         >
                             <div className="img relative aspect-[0.842] border rounded-[32px] bg-[#F6F6F6] overflow-hidden">
+                                {item.discount && (
+                                    <div className="discountPercent absolute top-3 right-3 py-2 px-5 bg-primary-orange z-50 rounded-3xl">
+                                        <p className='text-white font-medium text-xs'>
+                                            {getDiscountPercent(item.price, item.newPrice)}%
+                                        </p>
+                                    </div>
+                                )}
                                 <Image
                                     fill
                                     alt={item.name}
@@ -147,11 +154,18 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                                 >
                                     {item.name}
                                 </Link>
-                                <p className='text-primary-orange lg:text-lg lg:leading-[26px] font-semibold text-sm'>
-                                    {formatPrice(item.price)}
-                                </p>
+                                <div className="priceBox">
+                                    {item.discount && (
+                                        <p className='text-xs font-medium line-through text-gray-500'>
+                                            {formatPrice(item.price)}
+                                        </p>
+                                    )}
+                                    <p className='text-primary-orange lg:text-lg lg:leading-[26px] font-semibold text-sm'>
+                                        {formatPrice(item.discount ? item.newPrice : item.price)}
+                                    </p>
+                                </div>
                                 <button
-                                    className='text-white bg-primary-orange rounded-[32px] lg:px-6 lg:py-3 px-2.5 py-1.5 lg:mt-[27px] mt-1.5 font-medium lg:text-base text-xs'
+                                    className={`text-white bg-primary-orange rounded-[32px] lg:px-6 lg:py-3 px-2.5 py-1.5 lg:mt-[27px] mt-1.5 font-medium lg:text-base text-xs`}
                                     onClick={() => {
                                         setSelectedId(item.productId);
                                         setOpenDetails(true);
