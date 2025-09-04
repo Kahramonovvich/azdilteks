@@ -59,7 +59,7 @@ export default function ProductComponent({ product, locale }) {
                             {product.imageLinks.map((img, index) => (
                                 <div
                                     key={index}
-                                    className="img relative aspect-square bg-[#F5F5F5] lg:w-[109px] w-full rounded-lg overflow-hidden cursor-pointer"
+                                    className="img relative aspect-square bg-[#F5F5F5] lg:w-[110px] border w-full rounded-lg overflow-hidden cursor-pointer"
                                     onClick={() => setSelectedIndex(index)}
                                 >
                                     <Image
@@ -87,7 +87,7 @@ export default function ProductComponent({ product, locale }) {
                     </div>
                 </div>
                 <div className="right">
-                    <h3 className="text-[32px] leading-10 lg:mb-[70px] mb-5">
+                    <h3 className="text-[32px] leading-10 lg:mb-10 mb-5">
                         {product.name}
                     </h3>
                     <div className="size lg:mb-8 mb-4">
@@ -135,7 +135,7 @@ export default function ProductComponent({ product, locale }) {
                     </div>
                     <div className="price flex lg:flex-row flex-col gap-y-4 items-center gap-x-4 lg:mb-10 mb-5">
                         <div className="box border px-8 py-4 rounded-[32px] font-medium w-full text-center lg:text-start lg:w-auto">
-                            {formatPrice(product.price)}
+                            {formatPrice(product.discount ? product.newPrice : product.price)}
                         </div>
                         <button
                             className=" bg-primary-orange border border-primary-orange px-[67px] py-4 rounded-[32px] text-white w-full lg:w-auto"

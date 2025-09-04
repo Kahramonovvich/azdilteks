@@ -129,7 +129,7 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                 <div className="bottom mt-6 grid lg:grid-cols-3 lg:gap-6 gap-x-1.5 gap-y-3 grid-cols-2">
                     {selectedProducts.slice(0, 4).map((item) => (
                         <div
-                            className={`box ${selectedProducts?.length >= 3 ? 'lg:last-of-type:hidden' : ''}`}
+                            className={`box flex flex-col ${selectedProducts?.length >= 3 ? 'lg:last-of-type:hidden' : ''}`}
                             key={item.productId}
                         >
                             <div className="img relative aspect-[0.842] border rounded-[32px] bg-[#F6F6F6] overflow-hidden">
@@ -147,32 +147,34 @@ export default function OurProducts({ selectedIndustry, selectedSex, selectedPro
                                     style={{ objectFit: 'cover' }}
                                 />
                             </div>
-                            <div className="bottom lg:mt-[15px] mt-1.5">
+                            <div className="bottom flex-1 lg:mt-[15px] mt-1.5 flex flex-col justify-between">
                                 <Link
                                     href={`${locale}/catalog/product/${item.productId}`}
                                     className='name font-medium lg:text-2xl mb-1 text-nowrap truncate block'
                                 >
                                     {item.name}
                                 </Link>
-                                <div className="priceBox">
-                                    {item.discount && (
-                                        <p className='text-xs font-medium line-through text-gray-500'>
-                                            {formatPrice(item.price)}
+                                <div className="box">
+                                    <div className="priceBox">
+                                        {item.discount && (
+                                            <p className='text-xs font-medium line-through text-gray-500'>
+                                                {formatPrice(item.price)}
+                                            </p>
+                                        )}
+                                        <p className='text-primary-orange lg:text-lg lg:leading-[26px] font-semibold text-sm'>
+                                            {formatPrice(item.discount ? item.newPrice : item.price)}
                                         </p>
-                                    )}
-                                    <p className='text-primary-orange lg:text-lg lg:leading-[26px] font-semibold text-sm'>
-                                        {formatPrice(item.discount ? item.newPrice : item.price)}
-                                    </p>
+                                    </div>
+                                    <button
+                                        className={`text-white bg-primary-orange lg:w-max rounded-[32px] lg:px-6 lg:py-3 px-2.5 py-1.5 lg:mt-3 mt-1.5 font-medium lg:text-base text-xs`}
+                                        onClick={() => {
+                                            setSelectedId(item.productId);
+                                            setOpenDetails(true);
+                                        }}
+                                    >
+                                        {texts.addToCart}
+                                    </button>
                                 </div>
-                                <button
-                                    className={`text-white bg-primary-orange rounded-[32px] lg:px-6 lg:py-3 px-2.5 py-1.5 lg:mt-[27px] mt-1.5 font-medium lg:text-base text-xs`}
-                                    onClick={() => {
-                                        setSelectedId(item.productId);
-                                        setOpenDetails(true);
-                                    }}
-                                >
-                                    {texts.addToCart}
-                                </button>
                             </div>
                         </div>
                     ))}

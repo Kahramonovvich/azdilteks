@@ -61,7 +61,7 @@ export default function CallMe({ locale }) {
                                 name="phoneNumber"
                                 id="phoneNumber"
                                 required
-                                className="border outline-none rounded-3xl rounded-l-none border-l-0 bg-transparent border-[#E5E5E5] p-4 w-[327px] font-medium text-sm leading-[22px] text-[#A3A3A3]"
+                                className="border outline-none rounded-3xl rounded-l-none border-l-0 bg-transparent border-[#E5E5E5] p-4 w-full lg:w-[327px] font-medium text-sm leading-[22px] text-[#A3A3A3]"
                                 onChange={(e) => setPhoneNumber(normalizeLocal(e.target.value))}
                                 onPaste={(e) => {
                                     e.preventDefault();
